@@ -2,6 +2,7 @@
 import { defineConfig, loadEnv, type Connect, type Plugin, type ProxyOptions } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { normalizeBaseUrl } from './src/lib/baseUrl';
 
 // Decision model APIs generally don't accept browser (CORS) requests from localhost, so
 // the browser talks to `/api/*` on the Vite server, which forwards the call upstream and
@@ -13,9 +14,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const apiKey = env.DECISION_API_KEY ?? '';
-  const baseUrl = (env.DECISION_BASE_URL ?? '').trim().replace(/\/+$/, '');
   const endpointPath = withSlash(env.DECISION_ENDPOINT_PATH || '/v1/systemone');
   const modelsPath = withSlash(env.DECISION_MODELS_PATH || '/v1/models');
+  const rawBaseUrl = (env.DECISION_BASE_URL ?? '').trim();
+  const baseUrl = normalizeBaseUrl(rawBaseUrl, [endpointPath, modelsPath]);
   const defaultModel = (env.DECISION_MODEL ?? '').trim();
   // TLS certificate verification for the upstream API is OFF by default, so the app keeps
   // working behind TLS-intercepting proxies or with self-signed certificates. Only the /api
@@ -25,6 +27,15 @@ export default defineConfig(({ mode, command }) => {
 
   if (serving && !baseUrl) {
     console.warn('[playground] DECISION_BASE_URL is not set; requests to the model will fail.');
+  }
+  if (serving && baseUrl) {
+    if (baseUrl !== rawBaseUrl.replace(/\/+$/, '')) {
+      console.warn(
+        `[playground] DECISION_BASE_URL should be the server root; using ${baseUrl} ` +
+          `instead of ${rawBaseUrl} so the endpoint path is not repeated.`,
+      );
+    }
+    console.info(`[playground] Evaluation requests go to POST ${baseUrl}${endpointPath}`);
   }
   if (serving && !verifyTls && baseUrl.startsWith('https:')) {
     console.warn(
@@ -51,6 +62,11 @@ export default defineConfig(({ mode, command }) => {
               proxyReq.removeHeader('referer');
               proxyReq.removeHeader('cookie');
               if (apiKey) proxyReq.setHeader('Authorization', `Bearer ${apiKey}`);
+            });
+            // Tell the browser which upstream URL answered, so errors like 404 can name it.
+            proxy.on('proxyRes', (proxyRes) => {
+              const path = (proxyRes as { req?: { path?: string } }).req?.path ?? '';
+              proxyRes.headers['x-playground-upstream'] = `${new URL(baseUrl).origin}${path}`;
             });
           },
         },

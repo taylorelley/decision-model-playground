@@ -49,6 +49,21 @@ npm run dev               # http://localhost:5173
 
 The app shows a banner until `DECISION_BASE_URL` and `DECISION_API_KEY` are set.
 
+`DECISION_BASE_URL` is the server root, e.g. `http://host:8080`. If you paste a full endpoint URL
+such as `http://host:8080/v1/systemone` (or one ending in `/v1`), the playground strips the duplicate
+path and logs a warning, so the endpoint path isn't appended twice. At startup it logs the exact URL
+that evaluation requests go to.
+
+### Troubleshooting
+
+- **HTTP 404 / 405:** the server has no endpoint at the URL shown in the error. Check that
+  `DECISION_BASE_URL` is the server root and `DECISION_ENDPOINT_PATH` matches the server's evaluation
+  path.
+- **HTTP 422:** the server rejected the request shape. Some servers accept only a fixed set of model
+  names (set `DECISION_MODEL` to one of them), only plain-string `instructions` and criteria, or a
+  lower maximum number of options. If so, the lessons that use structured instructions or criteria
+  won't work against that server. The error body names the offending field.
+
 ### Docker
 
 ```bash

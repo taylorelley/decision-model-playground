@@ -41,16 +41,26 @@ export class ApiError extends Error {
   status: number;
   body: unknown;
   hint: string;
-  constructor(status: number, body: unknown) {
+  /** The upstream URL the playground server forwarded to, when known. */
+  upstream?: string;
+  constructor(status: number, body: unknown, upstream?: string) {
     super(`HTTP ${status}`);
     this.status = status;
     this.body = body;
-    this.hint = hintFor(status, body);
+    this.upstream = upstream;
+    this.hint = hintFor(status, body, upstream);
   }
 }
 
-function hintFor(status: number, body: unknown): string {
+function hintFor(status: number, body: unknown, upstream?: string): string {
   switch (status) {
+    case 404:
+    case 405:
+      return (
+        `The model server has no endpoint at ${upstream ?? 'the requested path'}. ` +
+        `DECISION_BASE_URL should be the server root (e.g. http://host:8080) and ` +
+        `DECISION_ENDPOINT_PATH the evaluation path (currently ${config.endpointPath}).`
+      );
     case 401:
     case 403:
       return config.hasKey
@@ -116,7 +126,11 @@ export async function evaluate(
       await sleep(delay);
       continue;
     }
-    throw new ApiError(res.status, await parseBody(res));
+    throw new ApiError(
+      res.status,
+      await parseBody(res),
+      res.headers.get('x-playground-upstream') ?? undefined,
+    );
   }
 }
 

@@ -28,6 +28,7 @@ ENV NODE_ENV=production \
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY package.json vite.config.ts ./
+COPY src/lib/baseUrl.ts ./src/lib/baseUrl.ts
 # Vite writes a temporary bundled copy of its config next to it, so the app dir must be writable.
 RUN chown node:node /app
 USER node
