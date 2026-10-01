@@ -1,4 +1,4 @@
-# Decision Model Playground
+# Using Decision Models
 
 A lightweight local app for **learning** how decision models work, with any provider whose API
 follows the same request and response format.

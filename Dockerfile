@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Decision Model Playground
+# Using Decision Models
 #
 #   docker build -t decision-model-playground .
 #   docker run --rm -p 4173:4173 \

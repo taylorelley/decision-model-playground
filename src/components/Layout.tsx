@@ -25,9 +25,9 @@ export function Layout() {
           <img src="/favicon.svg" alt="" className="h-6 w-6" />
           {!collapsed && (
             <span className="text-[13px] leading-tight font-semibold tracking-tight">
-              Decision Model
+              Using
               <br />
-              Playground
+              Decision Models
             </span>
           )}
           <button
