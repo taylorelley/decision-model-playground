@@ -3,13 +3,13 @@ import type { Lesson } from './types';
 export const lessons: Lesson[] = [
   {
     id: 'hotdog',
-    title: 'Is a hotdog a sandwich?',
+    title: 'Binary decisions',
     subtitle: 'Settle the everlasting debate with a Noul',
     primitive: 'Noul',
     icon: '🌭',
     steps: [
       {
-        title: 'Your first question',
+        title: 'Basic question',
         body: [
           'Every request has three parts: a [[state]] (what to look at), a model, and one or more typed questions.',
           'A [[noul]] is the simplest question type: a yes/no question. Instead of `true` or `false`, you get back the **probability that the answer is yes**.',
@@ -29,7 +29,7 @@ export const lessons: Lesson[] = [
         tryThis: ['Change the state to "Two slices of bread with ham and cheese between them."'],
       },
       {
-        title: 'Define what yes and no mean',
+        title: 'Decision criteria',
         body: [
           'Most disagreements are really about definitions. A noul accepts optional [[criteria]] that spell out what a yes and a no mean.',
           'Here we adopt a broad definition of "sandwich". The state is unchanged.',
@@ -56,7 +56,7 @@ export const lessons: Lesson[] = [
         ],
       },
       {
-        title: 'Point at parts of a structured state',
+        title: 'Structured state fields',
         body: [
           'State can be a JSON object. Name each piece, then refer to a field in your instructions using backticks, like `food`.',
           'Here we ask about three foods at once. Each question is independent, and they all see the same state.',
@@ -80,7 +80,7 @@ export const lessons: Lesson[] = [
         tryThis: ['Add a fourth field `burrito` and a question about it.'],
       },
       {
-        title: 'Check yourself: ask the opposite',
+        title: 'Consistency checks',
         body: [
           'Calibrated probabilities should be consistent with each other. If you ask a question and its negation, the two answers should add up to about 1.',
           'This is the idea behind self-consistency checks: when two framings disagree, send the case to a human.',
@@ -104,13 +104,13 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'sky',
-    title: 'What color is the sky?',
+    title: 'Category selection',
     subtitle: 'Go beyond blue with a Choice',
     primitive: 'Choice',
     icon: '🌤️',
     steps: [
       {
-        title: 'Pick one option',
+        title: 'Option selection',
         body: [
           'A [[choice]] question picks one option from a set you define. The options are the keys of `criteria`. Use `null` when an option needs no description.',
         ],
@@ -119,7 +119,7 @@ export const lessons: Lesson[] = [
           questions: {
             sky_color: {
               type: 'choice',
-              instructions: 'What color is the sky?',
+              instructions: 'Category selection',
               criteria: { blue: null, grey: null, orange: null, black: null },
             },
           },
@@ -131,7 +131,7 @@ export const lessons: Lesson[] = [
         ],
       },
       {
-        title: 'When the answer is unclear',
+        title: 'Uncertain outcomes',
         body: [
           'Now the state is genuinely ambiguous. A good decision model should **say so** rather than guess with false certainty.',
         ],
@@ -141,7 +141,7 @@ export const lessons: Lesson[] = [
           questions: {
             sky_color: {
               type: 'choice',
-              instructions: 'What color is the sky?',
+              instructions: 'Category selection',
               criteria: { blue: null, grey: null, orange: null, black: null },
             },
           },
@@ -154,7 +154,7 @@ export const lessons: Lesson[] = [
         tryThis: ['Add "It is 30 minutes after sunset." to the state and rerun.'],
       },
       {
-        title: 'Describe options with a rubric',
+        title: 'Option criteria',
         body: [
           'Option names alone leave room for interpretation. Give each option a [[rubric]] description, and add an escape-hatch option for cases that fit none of them.',
         ],
@@ -184,13 +184,13 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'monkey-art',
-    title: 'Can monkeys create art?',
+    title: 'Scoring',
     subtitle: 'A real-life court case, rated with a Score',
     primitive: 'Score',
     icon: '📷',
     steps: [
       {
-        title: 'Rate on a scale',
+        title: 'Scoring scale',
         body: [
           'A [[score]] rates the state against **ordered** levels that you define, lowest first. Use it when answers have a natural order: how much, how severe, how strong.',
           'The state describes the "monkey selfie" case (Naruto v. Slater, 9th Cir. 2018).',
@@ -218,7 +218,7 @@ export const lessons: Lesson[] = [
         ],
       },
       {
-        title: 'Descriptive levels beat bare labels',
+        title: 'Level definitions',
         body: [
           'Labels like "Weakly" or "Strongly" leave a lot open to interpretation. Describe what each level **looks like**. A good rubric is the biggest quality lever for a Score.',
         ],
@@ -247,7 +247,7 @@ export const lessons: Lesson[] = [
         tryThis: ['Swap the criteria for ["Low", "Medium", "High"] and compare the confidence.'],
       },
       {
-        title: 'Break a big judgment into small ones',
+        title: 'Composite scoring',
         body: [
           '"Is this art?" is too broad to answer well as one question. Split it into small, independent questions and **combine them in your own code** with weights you control. This is the **composite scoring** pattern.',
         ],
@@ -288,7 +288,7 @@ export const lessons: Lesson[] = [
     icon: '🗂️',
     steps: [
       {
-        title: 'A plain string',
+        title: 'Text state',
         body: [
           'The simplest [[state]] is a string, which works well for a single transmission, a METAR or a NOTAM.',
         ],
@@ -311,7 +311,7 @@ export const lessons: Lesson[] = [
         ],
       },
       {
-        title: 'A case file as an object',
+        title: 'Object state',
         body: [
           'Put related information together in one JSON object, with descriptive keys. Think of it as the strip, the clearance and the tape you would hand to a supervisor before asking them to decide.',
         ],
@@ -350,7 +350,7 @@ export const lessons: Lesson[] = [
         tryThis: ['Correct the readback to QNH 1009 and rerun.'],
       },
       {
-        title: 'Arrays for sequences',
+        title: 'Array state',
         body: [
           'An array suits ordered things, such as an exchange of transmissions or a run of system log lines.',
         ],
@@ -389,7 +389,7 @@ export const lessons: Lesson[] = [
     icon: '🧩',
     steps: [
       {
-        title: 'Instructions can be objects',
+        title: 'Object instructions',
         body: [
           'Sometimes the question needs its own reference data. [[instructions]] can be an object: put the question in one field and the data in the others, then refer to the data by name in backticks.',
           'This keeps the state about the **thing being judged** (here, a newly filed flight plan), while the question carries what to compare it with.',
@@ -423,7 +423,7 @@ export const lessons: Lesson[] = [
         tryThis: ['Change the existing plan’s `eobt` to 0915 and rerun.'],
       },
       {
-        title: 'Criteria can be structured too',
+        title: 'Structured criteria',
         body: [
           'Option descriptions can also be objects. This is useful when each option carries attributes, such as runways with their headings and approach aids.',
         ],
@@ -452,13 +452,13 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'fan-out',
-    title: 'Many questions, one call',
+    title: 'Multiple questions',
     subtitle: 'Fan-out, question ids and mixing primitives',
     primitive: 'Concept',
     icon: '🪭',
     steps: [
       {
-        title: 'Mix primitives in one request',
+        title: 'Combined decision types',
         body: [
           'One request can mix any number of Nouls, Choices and Scores. The state is read **once**, and every question is evaluated in parallel. This is [[fan-out]].',
           'It is also how you ask **speculative** questions: ask everything that might matter, then let your code decide which answers to use.',
@@ -509,7 +509,7 @@ export const lessons: Lesson[] = [
         ],
       },
       {
-        title: 'Question ids are just labels',
+        title: 'Question identifiers',
         body: [
           'The [[question-id]] (the key) is **not** sent to the model. Naming a question `definitely_routine` does not push the answer toward routine. Only the instructions and criteria matter.',
         ],
@@ -527,13 +527,13 @@ export const lessons: Lesson[] = [
   },
   {
     id: 'confidence-routing',
-    title: 'Acting on confidence',
+    title: 'Confidence thresholds',
     subtitle: 'The answer says what; confidence says whether to act',
     primitive: 'Concept',
     icon: '🚦',
     steps: [
       {
-        title: 'A clear request',
+        title: 'Specific requests',
         body: [
           'An engineering ops assistant maps each message to an action. Your code acts on its own **only** when confidence clears a threshold, and that threshold is higher for riskier actions. Restarting a live ATC service is about as risky as it gets.',
         ],
@@ -560,7 +560,7 @@ export const lessons: Lesson[] = [
         ],
       },
       {
-        title: 'A vague request',
+        title: 'Ambiguous requests',
         body: ['Now the message is vague, and it could involve restarting something live.'],
         request: {
           state: 'Can you sort out that thing with the radar feed from last night? Just bounce it.',

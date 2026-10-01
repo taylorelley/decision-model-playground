@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Semantic colour tokens; switched for dark mode below. */
+/* Airways website palette, with darker text shades and a matching dark theme. */
 @theme {
   --color-page: var(--page);
   --color-surface: var(--surface);
@@ -9,6 +9,8 @@
   --color-muted: var(--muted);
   --color-faint: var(--faint);
   --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-noul: var(--noul);
@@ -22,45 +24,46 @@
 }
 
 :root {
-  --page: #fafafa;
+  --brand: #00b5e2;
+  --on-brand: #00313d;
+  --page: #e5f8fc;
   --surface: #ffffff;
-  --sunken: #f4f4f5;
-  --ink: #18181b;
-  --muted: #52525b;
-  --faint: #a1a1aa;
-  --line: #e4e4e7;
-  --accent: #d63fa9;
-  --accent-soft: #fdf0f9;
-  --noul: #0e7490;
-  --choice: #7c3aed;
-  --score: #b45309;
-  --good: #15803d;
-  --warn: #b45309;
+  --sunken: #ccf0f9;
+  --ink: #333333;
+  --muted: #526168;
+  --faint: #62747c;
+  --line: #99e1f3;
+  --accent: #007a99;
+  --accent-soft: #e5f8fc;
+  --noul: #007a99;
+  --choice: #954b97;
+  --score: #00756e;
+  --good: #00756e;
+  --warn: #a6530a;
   --bad: #b91c1c;
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --page: #0b0b0d;
-    --surface: #131316;
-    --sunken: #1b1b1f;
-    --ink: #f4f4f5;
-    --muted: #a1a1aa;
-    --faint: #71717a;
-    --line: #2a2a30;
-    --accent: #ec6cc6;
-    --accent-soft: #2a1525;
-    --noul: #22d3ee;
-    --choice: #a78bfa;
-    --score: #fbbf24;
-    --good: #4ade80;
-    --warn: #fbbf24;
-    --bad: #f87171;
-    color-scheme: dark;
-  }
+:root[data-theme='dark'] {
+  --brand: #00b5e2;
+  --on-brand: #06232d;
+  --page: #0e141b;
+  --surface: #161f29;
+  --sunken: #1d2935;
+  --ink: #e7eef5;
+  --muted: #afbdcc;
+  --faint: #8b9bae;
+  --line: #334354;
+  --accent: #65d6f0;
+  --accent-soft: #15313e;
+  --noul: #65d6f0;
+  --choice: #d3a6df;
+  --score: #70d5c3;
+  --good: #70d5c3;
+  --warn: #edbc82;
+  --bad: #f38f99;
+  color-scheme: dark;
 }
-
 html,
 body,
 #root {

@@ -20,6 +20,27 @@ export function JsonEditor({
   const extensions = useMemo(
     () => [
       json(),
+      EditorView.theme({
+        '&': { backgroundColor: 'var(--surface)', color: 'var(--ink)' },
+        '.cm-gutters': {
+          backgroundColor: 'var(--page)',
+          color: 'var(--faint)',
+          borderRight: '1px solid var(--line)',
+        },
+        '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'var(--sunken)' },
+        '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--accent)' },
+        '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
+          backgroundColor: 'var(--accent-soft)',
+        },
+        '.cm-placeholder': { color: 'var(--faint)' },
+        '.cm-panels, .cm-tooltip': {
+          backgroundColor: 'var(--sunken)',
+          color: 'var(--ink)',
+          borderColor: 'var(--line)',
+        },
+        '.cm-searchMatch': { backgroundColor: 'var(--accent-soft)' },
+        '.cm-searchMatch.cm-searchMatch-selected': { outline: '1px solid var(--accent)' },
+      }),
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({ 'aria-label': ariaLabel }),
     ],

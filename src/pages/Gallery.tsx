@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, SectionLabel, TypeBadge, cx } from '../components/ui';
+import { Button, TypeBadge, cx } from '../components/ui';
 import { categories, examples } from '../content/examples';
 import type { Example, ExampleCategory } from '../content/types';
 import { primitivesUsed } from '../lib/primitives';
@@ -12,18 +12,7 @@ export function GalleryPage() {
   const shown = filter === 'All' ? examples : examples.filter((e) => e.category === filter);
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
-      <SectionLabel>Use-case gallery</SectionLabel>
-      <h1 className="mt-1 text-3xl font-semibold tracking-tight">ATC decisions, ready to run</h1>
-      <p className="mt-2 max-w-2xl text-sm text-muted">
-        Air traffic control operations, ATM systems engineering and safety assurance scenarios set
-        in New Zealand airspace, plus a few general examples. Each one is a complete request. Open
-        it in either mode, run it, then change the state to see how the answers move. The notes
-        explain why each problem uses the primitives it does, and how code would act on the answers.
-      </p>
-      <p className="mt-3 max-w-2xl rounded-md border border-warn/30 bg-warn/10 px-3 py-2 text-xs text-ink">
-        Training use only. Scenarios are fictional or simplified. In real systems the model advises
-        and people and procedures decide.
-      </p>
+      <h1 className="mt-1 text-3xl font-semibold tracking-tight">Use cases</h1>
       <div className="mt-6 flex flex-wrap gap-1.5" role="group" aria-label="Filter by category">
         {(['All', ...categories] as const).map((c) => (
           <button
@@ -33,7 +22,7 @@ export function GalleryPage() {
             className={cx(
               'rounded-full border px-3 py-1 text-xs transition-colors',
               filter === c
-                ? 'border-ink bg-ink text-page'
+                ? 'border-brand bg-brand text-on-brand'
                 : 'border-line text-muted hover:text-ink',
             )}
           >
@@ -68,7 +57,6 @@ function ExampleCard({ example: e }: { example: Example }) {
         <div>
           <div className="text-[11px] text-faint">{e.category}</div>
           <h2 className="font-semibold">{e.title}</h2>
-          <p className="text-sm text-muted">{e.tagline}</p>
         </div>
         <div className="flex shrink-0 gap-1">
           {primitivesUsed(e.request.questions).map((t) => (
@@ -84,11 +72,6 @@ function ExampleCard({ example: e }: { example: Example }) {
         <p className="mt-2 rounded bg-sunken px-2.5 py-1.5 font-mono text-[11.5px] leading-relaxed text-muted">
           <span className="text-faint">// in your code: </span>
           {e.inCode}
-        </p>
-      )}
-      {e.caution && (
-        <p className="mt-2 rounded border border-warn/30 bg-warn/10 px-2.5 py-1.5 text-xs text-ink">
-          ⚠ {e.caution}
         </p>
       )}
       <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">

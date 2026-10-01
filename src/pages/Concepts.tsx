@@ -1,16 +1,15 @@
 import { Link } from 'react-router-dom';
 import { ConfidenceExplorer } from '../components/ConfidenceExplorer';
 import { config } from '../api/client';
-import { SectionLabel, TypeBadge } from '../components/ui';
+import { TypeBadge } from '../components/ui';
 import { glossary } from '../content/glossary';
 
 export function ConceptsPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-10 text-sm leading-relaxed">
-      <SectionLabel>Concepts</SectionLabel>
-      <h1 className="mt-1 text-3xl font-semibold tracking-tight">How decision models work</h1>
+      <h1 className="mt-1 text-3xl font-semibold tracking-tight">Concepts</h1>
 
-      <H2 id="decision-models">Decision models are not chatbots</H2>
+      <H2 id="decision-models">Decision model overview</H2>
       <p className="text-muted">
         An LLM generates text, and you then have to parse that text and hope it is right. A{' '}
         <strong className="text-ink">decision model</strong> takes a <em>state</em> and a set of{' '}
@@ -24,7 +23,7 @@ export function ConceptsPage() {
         you need a structured decision.
       </Callout>
 
-      <H2 id="request">Anatomy of a request</H2>
+      <H2 id="request">Request structure</H2>
       <pre className="overflow-auto rounded-lg border border-line bg-surface p-4 font-mono text-xs">{`POST ${config.endpointPath}
 {
   "model": "your-model-name",       // which model answers
@@ -42,7 +41,7 @@ export function ConceptsPage() {
         <code className="font-mono">usage</code>.
       </p>
 
-      <H2 id="primitives">Choosing a primitive</H2>
+      <H2 id="primitives">Decision types</H2>
       <div className="overflow-hidden rounded-lg border border-line">
         <table className="w-full text-left text-xs">
           <thead className="bg-sunken text-muted">
@@ -90,7 +89,7 @@ export function ConceptsPage() {
         as unrelated labels, while a Score knows that High is closer to Medium than to Low.
       </p>
 
-      <H2 id="confidence">Probability vs. confidence</H2>
+      <H2 id="confidence">Probability and confidence</H2>
       <p className="mb-4 text-muted">
         <strong className="text-ink">Probability</strong> is about one outcome: “70% that it’s a
         network fault”. <strong className="text-ink">Confidence</strong> is about the whole
@@ -107,7 +106,7 @@ export function ConceptsPage() {
         than restarting a live ATC service, and some actions should never be automatic at all.
       </p>
 
-      <H2 id="patterns">Patterns</H2>
+      <H2 id="patterns">Design patterns</H2>
       <ul className="space-y-2 text-muted">
         <li>
           <strong className="text-ink">Speculative fan-out:</strong> ask many questions in one call,
@@ -134,7 +133,7 @@ export function ConceptsPage() {
         .
       </p>
 
-      <H2 id="tips">Writing good questions</H2>
+      <H2 id="tips">Question design</H2>
       <ul className="list-disc space-y-1.5 pl-5 text-muted">
         <li>
           Keep each question narrow and atomic. Several small questions beat one compound question.

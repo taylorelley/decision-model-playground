@@ -20,21 +20,7 @@ export function HomePage() {
   const { setMode } = usePlayground();
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
-      <SectionLabel>Decision models for air traffic management · Aotearoa New Zealand</SectionLabel>
-      <h1 className="mt-1 text-4xl font-semibold tracking-tight">
-        Learn how decision models think
-      </h1>
-      <p className="mt-3 max-w-2xl text-muted">
-        A hands-on course for ATC systems engineers. Decision models don’t write text: they read a{' '}
-        <strong className="text-ink">state</strong>, such as a sector snapshot, a readback, a NOTAM
-        or a fault log, answer typed <strong className="text-ink">questions</strong> about it, and
-        return probabilities your code can act on. Learn how to ask good questions, how to read the
-        answers, and where a human must stay in the loop.
-      </p>
-      <p className="mt-3 max-w-2xl rounded-md border border-warn/30 bg-warn/10 px-3 py-2 text-xs text-ink">
-        Training use only. All scenarios, callsigns, waypoints, frequencies and documents are
-        fictional or simplified, and no answer here is operational advice.
-      </p>
+      <h1 className="mt-1 text-4xl font-semibold tracking-tight">Decision models</h1>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-3">
         {(['noul', 'choice', 'score'] as const).map((t) => (
@@ -52,7 +38,7 @@ export function HomePage() {
         ))}
       </div>
 
-      <SectionLabel className="mt-12 mb-3">Walkthrough lessons</SectionLabel>
+      <SectionLabel className="mt-12 mb-3">Lessons</SectionLabel>
       <LessonGrid items={lessons.filter((l) => l.primitive !== 'Concept')} />
       <div className="mt-2 text-right text-xs">
         <Link to="/learn" className="text-accent hover:underline">
@@ -60,7 +46,7 @@ export function HomePage() {
         </Link>
       </div>
 
-      <SectionLabel className="mt-10 mb-3">ATC and engineering use cases</SectionLabel>
+      <SectionLabel className="mt-10 mb-3">Use cases</SectionLabel>
       <div className="border-t border-line">
         {FEATURED_EXAMPLES.map((id) => examples.find((e) => e.id === id)!).map((e) => (
           <button
@@ -69,7 +55,6 @@ export function HomePage() {
             className="flex w-full items-baseline gap-3 border-b border-line bg-surface px-4 py-3 text-left text-sm transition-colors hover:bg-accent-soft"
           >
             <span className="font-medium">{e.title}</span>
-            <span className="text-muted">{e.tagline}</span>
           </button>
         ))}
       </div>
@@ -79,7 +64,7 @@ export function HomePage() {
         </Link>
       </div>
 
-      <SectionLabel className="mt-10 mb-3">Two ways to build requests</SectionLabel>
+      <SectionLabel className="mt-10 mb-3">Request editors</SectionLabel>
       <div className="grid gap-3 sm:grid-cols-2">
         <button
           onClick={() => {
@@ -89,10 +74,6 @@ export function HomePage() {
           className="rounded-lg border border-line bg-surface p-5 text-left transition-colors hover:border-accent"
         >
           <div className="font-semibold">Simple mode</div>
-          <p className="mt-1 text-sm text-muted">
-            Forms with hints for state, instructions and criteria. Answers come back in plain
-            language with “How to read this” explainers.
-          </p>
         </button>
         <button
           onClick={() => {
@@ -102,10 +83,6 @@ export function HomePage() {
           className="rounded-lg border border-line bg-surface p-5 text-left transition-colors hover:border-accent"
         >
           <div className="font-semibold">Developer mode</div>
-          <p className="mt-1 text-sm text-muted">
-            Raw JSON editors, the raw response, and copy-ready curl, JavaScript and Python. Both
-            modes edit the same request.
-          </p>
         </button>
       </div>
     </div>

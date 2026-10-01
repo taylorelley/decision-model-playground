@@ -134,7 +134,7 @@ export const examples: Example[] = [
   },
   {
     id: 'readback-check',
-    title: 'Readback check',
+    title: 'Readback validation',
     tagline: 'Spot which element of a readback is wrong',
     category: 'ATC operations',
     why: 'Whether the readback is correct is a Noul. Which element is wrong is a Choice, with "none" as an honest way out. How much it matters is an ordered Score. Splitting them lets code highlight the exact element on a controller display.',
@@ -182,7 +182,7 @@ export const examples: Example[] = [
   },
   {
     id: 'wellington-wind',
-    title: 'Wellington wind and runway',
+    title: 'Wellington runway assessment',
     tagline: 'Cross-check runway direction and wind risk from a METAR',
     category: 'ATC operations',
     why: 'The runway direction is a Choice between two options. Turbulence and wind-shear risk is an ordered Score. A yes/no flag for approach warnings is a Noul. Wellington’s strong northerlies make it a good place to practise.',
@@ -493,7 +493,7 @@ export const examples: Example[] = [
   },
   {
     id: 'change-risk',
-    title: 'Change request risk',
+    title: 'Change risk assessment',
     tagline: 'Screen a flight data processing change before the CAB',
     category: 'ATM systems engineering',
     why: 'Safety impact is an ordered Score. Whether a safety assessment is needed and whether the rollback plan is adequate are Nouls. The recommended deployment window is a Choice. A change advisory board can see at a glance where to look harder.',
@@ -629,7 +629,7 @@ export const examples: Example[] = [
   },
   {
     id: 'ops-agent-tool-selection',
-    title: 'Engineering agent tool selection',
+    title: 'Agent tool selection',
     tagline: 'Pick the next tool for an on-call support agent',
     category: 'ATM systems engineering',
     why: 'An agent’s tools form a closed set, so choosing one is a Choice, with each tool described in its criteria. A Noul checks whether the agent should stop and ask a human instead. Restarting live services should always need a human.',
@@ -717,7 +717,7 @@ export const examples: Example[] = [
   },
   {
     id: 'atc-assistant-guardrails',
-    title: 'Guardrails for an ATC engineering assistant',
+    title: 'Assistant guardrails',
     tagline: 'Screen messages before they reach an internal LLM',
     category: 'Safety & assurance',
     why: 'Each hazard is a Noul with its own threshold. Severity is a Score. For an assistant used around ATC systems, the key hazard is anyone getting it to issue anything that looks like an operational clearance.',
@@ -751,7 +751,7 @@ export const examples: Example[] = [
   },
   {
     id: 'procedure-passage-relevance',
-    title: 'Procedure passage relevance',
+    title: 'Procedure relevance',
     tagline: 'Decide which retrieved manual passages reach an LLM',
     category: 'Safety & assurance',
     why: 'Each retrieved passage gets a relevance Score, and one Noul asks whether the passages can answer the question at all. Code keeps passages above a cut-off and refuses to answer when nothing relevant was retrieved, rather than letting an LLM guess.',
@@ -793,7 +793,7 @@ export const examples: Example[] = [
   },
   {
     id: 'procedure-citation-check',
-    title: 'Procedure citation check',
+    title: 'Citation validation',
     tagline: 'Catch an LLM summary that overstates a procedure',
     category: 'Safety & assurance',
     why: 'Whether a source supports, contradicts or ignores a claim is one of several outcomes, so it is a Choice. Run it on every citation an assistant produces, before an engineer sees the answer.',

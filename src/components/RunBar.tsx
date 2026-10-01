@@ -68,7 +68,7 @@ export function RunBar() {
           'ml-auto flex h-full shrink-0 items-center gap-2 px-5 text-sm font-medium whitespace-nowrap transition-colors',
           blocked || running
             ? 'cursor-not-allowed bg-sunken text-faint'
-            : 'bg-ink text-page hover:opacity-90',
+            : 'bg-brand text-on-brand hover:opacity-90',
         )}
       >
         {running ? 'Running…' : 'Run request'}

@@ -56,7 +56,7 @@ export function Button({
       className={cx(
         'inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
         size === 'sm' ? 'h-7 px-2 text-xs' : 'h-9 px-3 text-sm',
-        variant === 'primary' && 'bg-ink text-page hover:opacity-90',
+        variant === 'primary' && 'bg-brand text-on-brand hover:opacity-90',
         variant === 'default' && 'border border-line bg-surface text-ink hover:bg-sunken',
         variant === 'ghost' && 'text-muted hover:bg-sunken hover:text-ink',
         variant === 'danger' && 'text-muted hover:bg-sunken hover:text-bad',

@@ -2,17 +2,21 @@ import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { config } from '../api/client';
 import { cx } from './ui';
+import { setThemePreference, useThemePreference } from '../lib/useColorScheme';
 
 const nav = [
   { to: '/', label: 'Home', icon: '⌂', end: true },
   { to: '/learn', label: 'Lessons', icon: '◎' },
-  { to: '/gallery', label: 'Use-case gallery', icon: '▦' },
+  { to: '/gallery', label: 'Use cases', icon: '▦' },
   { to: '/playground', label: 'Playground', icon: '⚗' },
   { to: '/concepts', label: 'Concepts', icon: '✎' },
 ];
 
 export function Layout() {
   const [collapsed, setCollapsed] = useState(false);
+  const theme = useThemePreference();
+  const nextTheme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
+  const themeLabel = `${theme[0].toUpperCase()}${theme.slice(1)} theme. Switch to ${nextTheme}.`;
   return (
     <div className="flex h-full">
       <aside
@@ -22,11 +26,14 @@ export function Layout() {
         )}
       >
         <div className="flex h-14 items-center gap-2 px-4">
-          <img src="/favicon.svg" alt="" className="h-6 w-6" />
+          <span
+            aria-hidden="true"
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-brand text-sm text-on-brand"
+          >
+            ▶
+          </span>
           {!collapsed && (
             <span className="text-[13px] leading-tight font-semibold tracking-tight">
-              Using
-              <br />
               Decision Models
             </span>
           )}
@@ -49,7 +56,7 @@ export function Layout() {
                 cx(
                   'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors',
                   isActive
-                    ? 'bg-sunken font-medium text-ink'
+                    ? 'bg-brand font-medium text-on-brand'
                     : 'text-muted hover:bg-sunken hover:text-ink',
                 )
               }
@@ -61,52 +68,77 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
-        {!collapsed && (
-          <div className="mt-auto m-3 rounded-lg border border-line bg-surface p-3 text-xs">
-            <div className="text-muted">Endpoint</div>
-            <div
-              className={cx('truncate font-mono text-[11px]', !config.baseUrl && 'text-bad')}
-              title={config.baseUrl ? `${config.baseUrl}${config.endpointPath}` : undefined}
+        <div className="mt-auto pt-4">
+          <div
+            className={cx(
+              'flex items-center gap-2 border-t border-line px-3 py-3',
+              collapsed ? 'justify-center' : 'justify-between',
+            )}
+          >
+            {!collapsed && (
+              <div
+                className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted"
+                title={
+                  config.baseUrl
+                    ? `${config.baseUrl}${config.endpointPath} · ${config.hasKey ? 'API key loaded' : 'No API key'}`
+                    : 'Endpoint not configured'
+                }
+              >
+                <span
+                  aria-hidden="true"
+                  className={cx(
+                    'h-1.5 w-1.5 shrink-0 rounded-full',
+                    config.baseUrl && config.hasKey ? 'bg-good' : 'bg-bad',
+                  )}
+                />
+                <span className="truncate">
+                  {config.baseUrl
+                    ? config.baseUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')
+                    : 'Not configured'}
+                </span>
+              </div>
+            )}
+            <button
+              type="button"
+              aria-label={themeLabel}
+              title={themeLabel}
+              onClick={() => setThemePreference(nextTheme)}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors hover:border-accent hover:bg-sunken hover:text-ink"
             >
-              {config.baseUrl ? config.baseUrl.replace(/^https?:\/\//, '') : 'Not configured'}
-            </div>
-            <div className="mt-2 flex items-center gap-1.5">
-              <span className={cx('h-2 w-2 rounded-full', config.hasKey ? 'bg-good' : 'bg-bad')} />
-              <span className={config.hasKey ? 'text-muted' : 'text-bad'}>
-                {config.hasKey ? 'API key loaded' : 'No API key'}
-              </span>
-            </div>
+              <svg
+                aria-hidden="true"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {theme === 'system' ? (
+                  <>
+                    <rect x="3" y="4" width="18" height="12" rx="2" />
+                    <path d="M12 16v4m-4 0h8" />
+                  </>
+                ) : theme === 'light' ? (
+                  <>
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" />
+                  </>
+                ) : (
+                  <path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z" />
+                )}
+              </svg>
+            </button>
           </div>
-        )}
+        </div>
       </aside>
       <main className="flex min-w-0 flex-1 flex-col">
-        {(!config.hasKey || !config.baseUrl) && <SetupBanner />}
         <div className="min-h-0 flex-1 overflow-auto">
           <Outlet />
         </div>
       </main>
-    </div>
-  );
-}
-
-function SetupBanner() {
-  const missing = [
-    !config.baseUrl && 'DECISION_BASE_URL',
-    !config.hasKey && 'DECISION_API_KEY',
-  ].filter(Boolean) as string[];
-  return (
-    <div role="status" className="border-b border-warn/30 bg-warn/10 px-4 py-2 text-xs text-ink">
-      <strong>{config.baseUrl ? 'No API key set.' : 'No model endpoint configured.'}</strong> You
-      can browse lessons and build requests, but running them needs{' '}
-      {missing.map((m, i) => (
-        <span key={m}>
-          {i > 0 && ' and '}
-          <code className="font-mono">{m}</code>
-        </span>
-      ))}
-      . Set {missing.length > 1 ? 'them' : 'it'} in <code className="font-mono">.env</code> (copy{' '}
-      <code className="font-mono">.env.example</code>) or the container environment, then restart
-      the playground server.
     </div>
   );
 }

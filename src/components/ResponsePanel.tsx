@@ -149,12 +149,6 @@ function UsageFooter({
 }) {
   return (
     <div className="space-y-1 border-t border-line bg-sunken/50 px-4 py-3 text-xs text-muted">
-      {/mock/i.test(model) && (
-        <div className="mb-2 rounded border border-warn/30 bg-warn/10 px-2 py-1 text-ink">
-          These answers come from the local mock server. They are random numbers, not real model
-          output.
-        </div>
-      )}
       <div>
         Answered by <span className="font-mono text-ink">{model}</span>
         {requested !== model && (

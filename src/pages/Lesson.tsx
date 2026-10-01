@@ -90,9 +90,7 @@ export function LessonPage() {
               last?.result ? 'border-accent/40 bg-accent-soft' : 'border-line',
             )}
           >
-            <SectionLabel className="mb-2">
-              {last?.result ? 'What to notice' : 'Run it, then notice'}
-            </SectionLabel>
+            <SectionLabel className="mb-2">Observations</SectionLabel>
             <ul className="space-y-2 text-sm leading-relaxed text-muted">
               {step.notice.map((n, i) => (
                 <li key={i} className="flex gap-2">
@@ -107,7 +105,7 @@ export function LessonPage() {
 
           {step.tryThis && (
             <div className="mt-4 rounded-lg border border-dashed border-line p-4">
-              <SectionLabel className="mb-2">Try this</SectionLabel>
+              <SectionLabel className="mb-2">Exercises</SectionLabel>
               <ul className="space-y-2 text-sm leading-relaxed text-muted">
                 {step.tryThis.map((t, i) => (
                   <li key={i}>
