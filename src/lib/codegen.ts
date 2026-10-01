@@ -2,13 +2,14 @@ import type { EvaluateRequest } from '../api/types';
 
 export type CodeLang = 'curl' | 'javascript' | 'python';
 
-export function toCode(req: EvaluateRequest, lang: CodeLang, baseUrl: string): string {
+/** Render the request as code. `endpoint` is the full upstream URL (base URL + endpoint path). */
+export function toCode(req: EvaluateRequest, lang: CodeLang, endpoint: string): string {
   const json = JSON.stringify(req, null, 2);
-  const url = `${baseUrl}/v1/systemone`;
+  const url = endpoint || 'https://your-decision-model-host/v1/...';
   switch (lang) {
     case 'curl':
       return `curl ${url} \\
-  -H "Authorization: Bearer $TYPESAFE_API_KEY" \\
+  -H "Authorization: Bearer $DECISION_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d @- <<'JSON'
 ${json}
@@ -17,7 +18,7 @@ JSON`;
       return `const res = await fetch(${JSON.stringify(url)}, {
   method: 'POST',
   headers: {
-    Authorization: \`Bearer \${process.env.TYPESAFE_API_KEY}\`,
+    Authorization: \`Bearer \${process.env.DECISION_API_KEY}\`,
     'Content-Type': 'application/json',
   },
   body: JSON.stringify(${indent(json, 2)}),
@@ -25,18 +26,23 @@ JSON`;
 const { answers } = await res.json();
 `;
     case 'python':
-      return `# pip install typesafe-sdk  (reads TYPESAFE_API_KEY from the environment)
-from typesafe_sdk import TypeSafeClient
+      return `# pip install requests
+import os
+import requests
 
-client = TypeSafeClient()
-
-response = client.system_one(
-    model=${pyLiteral(req.model)},
-    state=${indent(pyLiteral(req.state), 4)},
-    questions=${indent(pyLiteral(req.questions), 4)},
+response = requests.post(
+    ${JSON.stringify(url)},
+    headers={"Authorization": f"Bearer {os.environ['DECISION_API_KEY']}"},
+    json={
+        "model": ${pyLiteral(req.model)},
+        "state": ${pyLiteral(req.state, 2)},
+        "questions": ${pyLiteral(req.questions, 2)},
+    },
+    timeout=30,
 )
+response.raise_for_status()
 
-for key, answer in response.answers.items():
+for key, answer in response.json()["answers"].items():
     print(key, answer)
 `;
   }

@@ -1,5 +1,4 @@
-// Helpers for reading answers. The choice confidence formula mirrors the interactive
-// explorer in https://docs.typesafe.ai/confidence.md:
+// Helpers for reading answers. Choice confidence is explained with the peak formula:
 //   confidence = (n * p_max - 1) / (n - 1)
 // i.e. 0 when the distribution is uniform, 1 when all mass is on one option.
 // The API returns `confidence` itself; we recompute it only to explain it.
@@ -18,7 +17,7 @@ export function expectedLevel(probabilities: Record<string, number>): number {
 
 export type ConfidenceBand = 'high' | 'medium' | 'low';
 
-/** The three-path pattern from the docs. Thresholds are a teaching default, not a rule. */
+/** The common high/medium/low pattern. Thresholds are a teaching default, not a rule. */
 export function confidenceBand(confidence: number, high = 0.8, low = 0.5): ConfidenceBand {
   if (confidence >= high) return 'high';
   if (confidence >= low) return 'medium';

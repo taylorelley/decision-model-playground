@@ -51,9 +51,9 @@ export function NoulAnswerView({
             {(certainty * 100).toFixed(0)}% of the way from a coin flip to certain.
           </p>
           <p>
-            Jev is trained to be <strong className="text-ink">calibrated</strong>: across many
-            answers of {p.toFixed(2)}, about {(p * 100).toFixed(0)}% should turn out to be
-            &quot;yes&quot;.
+            For a well-<strong className="text-ink">calibrated</strong> model, about{' '}
+            {(p * 100).toFixed(0)}% of answers given {p.toFixed(2)} should turn out to be
+            &quot;yes&quot;. Check this on your own labelled data before relying on it.
           </p>
         </Explainer>
       </Disclosure>

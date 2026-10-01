@@ -1,4 +1,4 @@
-// Types for POST /v1/systemone — see https://docs.typesafe.ai/api.md
+// Request and response types for the decision model evaluation endpoint.
 
 /** Instructions and criteria entries may be plain text or structured JSON. */
 export type Structured = string | Record<string, unknown> | unknown[];

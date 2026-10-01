@@ -3,52 +3,82 @@ import { defineConfig, loadEnv, type Connect, type Plugin, type ProxyOptions } f
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// The TypeSafe API does not allow browser (CORS) requests from localhost, so the
-// browser talks to `/api/*` on the Vite server, which forwards the call upstream
-// and attaches the API key. The key stays in this Node process and is never sent
-// to the browser bundle.
+// Decision model APIs generally don't accept browser (CORS) requests from localhost, so
+// the browser talks to `/api/*` on the Vite server, which forwards the call upstream and
+// attaches the API key. The key stays in this Node process and is never sent to the
+// browser bundle.
+//
+//   /api/evaluate -> DECISION_BASE_URL + DECISION_ENDPOINT_PATH
+//   /api/models   -> DECISION_BASE_URL + DECISION_MODELS_PATH
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const apiKey = env.TYPESAFE_API_KEY ?? '';
-  const baseUrl = (env.TYPESAFE_BASE_URL || 'https://api.typesafe.ai').replace(/\/+$/, '');
-  const defaultModel = env.DEFAULT_MODEL || 'jev-latest';
+  const apiKey = env.DECISION_API_KEY ?? '';
+  const baseUrl = (env.DECISION_BASE_URL ?? '').trim().replace(/\/+$/, '');
+  const endpointPath = withSlash(env.DECISION_ENDPOINT_PATH || '/v1/systemone');
+  const modelsPath = withSlash(env.DECISION_MODELS_PATH || '/v1/models');
+  const defaultModel = (env.DECISION_MODEL ?? '').trim();
   // TLS certificate verification for the upstream API is OFF by default, so the app keeps
   // working behind TLS-intercepting proxies or with self-signed certificates. Only the /api
-  // proxy's outbound call is affected. Set TYPESAFE_VERIFY_TLS=true to turn checks back on.
-  const verifyTls = /^(1|true|yes|on)$/i.test(env.TYPESAFE_VERIFY_TLS ?? '');
-  if (!verifyTls && command === 'serve' && !process.env.VITEST && baseUrl.startsWith('https:')) {
+  // proxy's outbound call is affected. Set DECISION_VERIFY_TLS=true to turn checks back on.
+  const verifyTls = /^(1|true|yes|on)$/i.test(env.DECISION_VERIFY_TLS ?? '');
+  const serving = command === 'serve' && !process.env.VITEST;
+
+  if (serving && !baseUrl) {
+    console.warn('[playground] DECISION_BASE_URL is not set; requests to the model will fail.');
+  }
+  if (serving && !verifyTls && baseUrl.startsWith('https:')) {
     console.warn(
       `[playground] TLS certificate verification is disabled for ${baseUrl}. ` +
-        'Set TYPESAFE_VERIFY_TLS=true to enable it.',
+        'Set DECISION_VERIFY_TLS=true to enable it.',
     );
   }
 
-  const apiProxy: Record<string, ProxyOptions> = {
-    '/api': {
-      target: baseUrl,
-      changeOrigin: true,
-      secure: verifyTls,
-      rewrite: (path) => path.replace(/^\/api/, ''),
-      configure: (proxy) => {
-        proxy.on('proxyReq', (proxyReq) => {
-          // Server-to-server call: drop browser-only headers the upstream would treat as CORS.
-          proxyReq.removeHeader('origin');
-          proxyReq.removeHeader('referer');
-          proxyReq.removeHeader('cookie');
-          if (apiKey) proxyReq.setHeader('Authorization', `Bearer ${apiKey}`);
-        });
-      },
-    },
-  };
+  const apiProxy: Record<string, ProxyOptions> = baseUrl
+    ? {
+        '/api': {
+          target: baseUrl,
+          changeOrigin: true,
+          secure: verifyTls,
+          rewrite: (path) =>
+            path
+              .replace(/^\/api\/evaluate(?=$|\?)/, endpointPath)
+              .replace(/^\/api\/models(?=$|\?)/, modelsPath)
+              .replace(/^\/api(?=\/)/, ''),
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq) => {
+              // Server-to-server call: drop browser-only headers the upstream would treat as CORS.
+              proxyReq.removeHeader('origin');
+              proxyReq.removeHeader('referer');
+              proxyReq.removeHeader('cookie');
+              if (apiKey) proxyReq.setHeader('Authorization', `Bearer ${apiKey}`);
+            });
+          },
+        },
+      }
+    : {};
 
   // Non-secret settings, served at runtime so a prebuilt bundle (e.g. the Docker
   // image) reflects the environment it runs in rather than the one it was built in.
-  const runtimeConfig = JSON.stringify({ hasKey: apiKey.length > 0, baseUrl, defaultModel });
+  const runtimeConfig = JSON.stringify({
+    hasKey: apiKey.length > 0,
+    baseUrl,
+    endpointPath,
+    defaultModel,
+  });
   const serveConfig: Connect.NextHandleFunction = (req, res, next) => {
-    if (req.url !== '/__playground/config') return next();
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-store');
-    res.end(runtimeConfig);
+    if (req.url === '/__playground/config') {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'no-store');
+      res.end(runtimeConfig);
+      return;
+    }
+    if (!baseUrl && req.url?.startsWith('/api/')) {
+      res.statusCode = 503;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ detail: 'DECISION_BASE_URL is not set on the playground server.' }));
+      return;
+    }
+    next();
   };
   const runtimeConfigPlugin: Plugin = {
     name: 'playground-runtime-config',
@@ -62,6 +92,7 @@ export default defineConfig(({ mode, command }) => {
     define: {
       __HAS_KEY__: JSON.stringify(apiKey.length > 0),
       __BASE_URL__: JSON.stringify(baseUrl),
+      __ENDPOINT_PATH__: JSON.stringify(endpointPath),
       __DEFAULT_MODEL__: JSON.stringify(defaultModel),
     },
     server: { proxy: apiProxy },
@@ -74,3 +105,8 @@ export default defineConfig(({ mode, command }) => {
     },
   };
 });
+
+function withSlash(p: string): string {
+  const t = p.trim();
+  return t.startsWith('/') ? t : `/${t}`;
+}

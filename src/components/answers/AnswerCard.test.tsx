@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { AnswerCard } from './AnswerCard';
 
-// Sample responses from https://docs.typesafe.ai/api.md
+// Sample responses in the shape the evaluation endpoint returns.
 describe('AnswerCard', () => {
   it('renders a noul answer as a probability', () => {
     render(

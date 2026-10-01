@@ -1,7 +1,5 @@
 import type { Lesson } from './types';
 
-const DOCS = 'https://docs.typesafe.ai';
-
 export const lessons: Lesson[] = [
   {
     id: 'hotdog',
@@ -9,10 +7,6 @@ export const lessons: Lesson[] = [
     subtitle: 'Settle the everlasting debate with a Noul',
     primitive: 'Noul',
     icon: '🌭',
-    docs: [
-      { label: 'Noul', url: `${DOCS}/primitives/noul` },
-      { label: 'Self-consistency: nouls', url: `${DOCS}/cookbooks/consistency_noul_cookbook` },
-    ],
     steps: [
       {
         title: 'Your first question',
@@ -114,10 +108,6 @@ export const lessons: Lesson[] = [
     subtitle: 'Go beyond blue with a Choice',
     primitive: 'Choice',
     icon: '🌤️',
-    docs: [
-      { label: 'Choice', url: `${DOCS}/primitives/choice` },
-      { label: 'Confidence', url: `${DOCS}/confidence` },
-    ],
     steps: [
       {
         title: 'Pick one option',
@@ -198,10 +188,6 @@ export const lessons: Lesson[] = [
     subtitle: 'A real-life court case, rated with a Score',
     primitive: 'Score',
     icon: '📷',
-    docs: [
-      { label: 'Score', url: `${DOCS}/primitives/score` },
-      { label: 'Composite scoring', url: `${DOCS}/patterns/composite-scoring` },
-    ],
     steps: [
       {
         title: 'Rate on a scale',
@@ -263,7 +249,7 @@ export const lessons: Lesson[] = [
       {
         title: 'Break a big judgment into small ones',
         body: [
-          '"Is this art?" is too broad to answer well as one question. Split it into small, independent questions and **combine them in your own code** with weights you control. This is the [composite scoring](https://docs.typesafe.ai/patterns/composite-scoring) pattern.',
+          '"Is this art?" is too broad to answer well as one question. Split it into small, independent questions and **combine them in your own code** with weights you control. This is the **composite scoring** pattern.',
         ],
         request: {
           state: {
@@ -300,7 +286,6 @@ export const lessons: Lesson[] = [
     subtitle: 'Give the model a case file, not a paragraph',
     primitive: 'Concept',
     icon: '🗂️',
-    docs: [{ label: 'State', url: `${DOCS}/concepts/state` }],
     steps: [
       {
         title: 'A plain string',
@@ -384,10 +369,6 @@ export const lessons: Lesson[] = [
     subtitle: 'Pass data along with the question',
     primitive: 'Concept',
     icon: '🧩',
-    docs: [
-      { label: 'Advanced: structure', url: `${DOCS}/primitives/advanced` },
-      { label: 'How to build with TypeSafe', url: `${DOCS}/concepts/how-to-build-with-system-one` },
-    ],
     steps: [
       {
         title: 'Instructions can be objects',
@@ -458,10 +439,6 @@ export const lessons: Lesson[] = [
     subtitle: 'Fan-out, question ids and mixing primitives',
     primitive: 'Concept',
     icon: '🪭',
-    docs: [
-      { label: 'Speculative fan-out', url: `${DOCS}/patterns/fan-out` },
-      { label: 'Parallel questions cookbook', url: `${DOCS}/cookbooks/parallel_questions` },
-    ],
     steps: [
       {
         title: 'Mix primitives in one request',
@@ -530,10 +507,6 @@ export const lessons: Lesson[] = [
     subtitle: 'The answer says what; confidence says whether to act',
     primitive: 'Concept',
     icon: '🚦',
-    docs: [
-      { label: 'Confidence-gated routing', url: `${DOCS}/patterns/confidence-routing` },
-      { label: 'Confidence', url: `${DOCS}/confidence` },
-    ],
     steps: [
       {
         title: 'A clear request',

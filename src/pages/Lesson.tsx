@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { RichText } from '../components/RichText';
 import { ModeToggle, Workbench } from '../components/Workbench';
-import { Button, ExternalLink, SectionLabel, cx } from '../components/ui';
+import { Button, SectionLabel, cx } from '../components/ui';
 import { lessonById, lessons } from '../content/lessons';
 import { usePlayground } from '../store/playground';
 
@@ -145,17 +145,6 @@ export function LessonPage() {
                 Explore use cases →
               </Button>
             )}
-          </div>
-
-          <div className="mt-6 border-t border-line pt-4 text-xs text-muted">
-            <SectionLabel className="mb-2">Read more</SectionLabel>
-            <ul className="space-y-1">
-              {lesson.docs.map((d) => (
-                <li key={d.url}>
-                  <ExternalLink href={d.url}>{d.label}</ExternalLink>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </aside>

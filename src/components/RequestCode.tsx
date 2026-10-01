@@ -7,7 +7,11 @@ import { Tabs } from './ui';
 
 export function RequestCode({ request }: { request: EvaluateRequest }) {
   const [lang, setLang] = useState<CodeLang>('curl');
-  const code = toCode(request, lang, config.baseUrl);
+  const code = toCode(
+    request,
+    lang,
+    config.baseUrl ? `${config.baseUrl}${config.endpointPath}` : '',
+  );
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-2">
@@ -17,7 +21,7 @@ export function RequestCode({ request }: { request: EvaluateRequest }) {
           options={[
             { value: 'curl', label: 'curl' },
             { value: 'javascript', label: 'JavaScript' },
-            { value: 'python', label: 'Python SDK' },
+            { value: 'python', label: 'Python' },
           ]}
         />
         <CopyButton text={code} />

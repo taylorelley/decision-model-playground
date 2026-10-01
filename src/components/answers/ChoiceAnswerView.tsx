@@ -48,7 +48,7 @@ export function ChoiceAnswerView({
           <p>
             <strong className="text-ink">Confidence</strong> describes the <em>shape</em> of that
             distribution: 0 when it is flat, 1 when all probability is on one option. One way to
-            compute it (the formula behind the docs’ explorer) is:
+            compute it, the peak formula, is:
             <br />
             <Mono>
               (n·p<sub>max</sub> − 1) / (n − 1) = ({n}·{pmax.toFixed(2)} − 1) / {n - 1} ={' '}

@@ -3,7 +3,7 @@ import { bandCopy, confidenceBand, peakConfidence } from '../lib/confidence';
 
 const OPTIONS = ['A', 'B', 'C'];
 
-/** Drag probabilities around and watch confidence change. Mirrors the explorer in the TypeSafe docs. */
+/** Drag probabilities around and watch confidence change. */
 export function ConfidenceExplorer() {
   const [probs, setProbs] = useState([90, 6, 4]);
 

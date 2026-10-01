@@ -60,24 +60,15 @@ export function Layout() {
               {!collapsed && n.label}
             </NavLink>
           ))}
-          <a
-            href="https://docs.typesafe.ai"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm text-muted hover:bg-sunken hover:text-ink"
-            title="TypeSafe documentation"
-          >
-            <span className="w-4 text-center" aria-hidden>
-              ↗
-            </span>
-            {!collapsed && 'Documentation'}
-          </a>
         </nav>
         {!collapsed && (
           <div className="mt-auto m-3 rounded-lg border border-line bg-surface p-3 text-xs">
             <div className="text-muted">Endpoint</div>
-            <div className="truncate font-mono text-[11px]" title={config.baseUrl}>
-              {config.baseUrl.replace(/^https?:\/\//, '')}
+            <div
+              className={cx('truncate font-mono text-[11px]', !config.baseUrl && 'text-bad')}
+              title={config.baseUrl ? `${config.baseUrl}${config.endpointPath}` : undefined}
+            >
+              {config.baseUrl ? config.baseUrl.replace(/^https?:\/\//, '') : 'Not configured'}
             </div>
             <div className="mt-2 flex items-center gap-1.5">
               <span className={cx('h-2 w-2 rounded-full', config.hasKey ? 'bg-good' : 'bg-bad')} />
@@ -89,7 +80,7 @@ export function Layout() {
         )}
       </aside>
       <main className="flex min-w-0 flex-1 flex-col">
-        {!config.hasKey && <KeyBanner />}
+        {(!config.hasKey || !config.baseUrl) && <SetupBanner />}
         <div className="min-h-0 flex-1 overflow-auto">
           <Outlet />
         </div>
@@ -98,14 +89,24 @@ export function Layout() {
   );
 }
 
-function KeyBanner() {
+function SetupBanner() {
+  const missing = [
+    !config.baseUrl && 'DECISION_BASE_URL',
+    !config.hasKey && 'DECISION_API_KEY',
+  ].filter(Boolean) as string[];
   return (
     <div role="status" className="border-b border-warn/30 bg-warn/10 px-4 py-2 text-xs text-ink">
-      <strong>No API key set.</strong> You can browse lessons and build requests, but running them
-      needs a key. Copy <code className="font-mono">.env.example</code> to{' '}
-      <code className="font-mono">.env</code>, set{' '}
-      <code className="font-mono">TYPESAFE_API_KEY</code>, then restart{' '}
-      <code className="font-mono">npm run dev</code>.
+      <strong>{config.baseUrl ? 'No API key set.' : 'No model endpoint configured.'}</strong> You
+      can browse lessons and build requests, but running them needs{' '}
+      {missing.map((m, i) => (
+        <span key={m}>
+          {i > 0 && ' and '}
+          <code className="font-mono">{m}</code>
+        </span>
+      ))}
+      . Set {missing.length > 1 ? 'them' : 'it'} in <code className="font-mono">.env</code> (copy{' '}
+      <code className="font-mono">.env.example</code>) or the container environment, then restart
+      the playground server.
     </div>
   );
 }

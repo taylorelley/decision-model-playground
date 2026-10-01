@@ -2,7 +2,7 @@ import { examples } from '../content/examples';
 import { lessons } from '../content/lessons';
 import { validateRequest } from './validate';
 
-const base = { state: 'hello', model: 'jev-latest' };
+const base = { state: 'hello', model: 'example-model' };
 
 describe('validateRequest', () => {
   it('accepts a minimal noul request', () => {
@@ -63,13 +63,13 @@ describe('validateRequest', () => {
   it.each(
     lessons.flatMap((l) => l.steps.map((s, i) => [`${l.id} step ${i + 1}`, s.request] as const)),
   )('lesson %s is a valid request', (_, req) => {
-    expect(validateRequest({ ...req, model: 'jev-latest' })).toEqual([]);
+    expect(validateRequest({ ...req, model: 'example-model' })).toEqual([]);
   });
 
   it.each(examples.map((e) => [e.id, e.request] as const))(
     'example %s is a valid request',
     (_, req) => {
-      expect(validateRequest({ ...req, model: 'jev-latest' })).toEqual([]);
+      expect(validateRequest({ ...req, model: 'example-model' })).toEqual([]);
     },
   );
 });

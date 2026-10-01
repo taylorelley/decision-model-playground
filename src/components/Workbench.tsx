@@ -16,7 +16,7 @@ export function ModeToggle() {
       onChange={setMode}
       options={[
         { value: 'simple', label: 'Simple', title: 'Form-based editor with explanations' },
-        { value: 'dev', label: 'Developer', title: 'Raw JSON editors, like the TypeSafe console' },
+        { value: 'dev', label: 'Developer', title: 'Raw JSON editors and the raw response' },
       ]}
     />
   );

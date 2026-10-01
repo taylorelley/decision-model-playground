@@ -127,8 +127,7 @@ function ErrorBox({
         <p className="mt-2 text-xs text-muted">
           Copy <code className="font-mono">.env.example</code> to{' '}
           <code className="font-mono">.env</code>, set{' '}
-          <code className="font-mono">TYPESAFE_API_KEY</code> and restart{' '}
-          <code className="font-mono">npm run dev</code>.
+          <code className="font-mono">DECISION_API_KEY</code> and restart the playground server.
         </p>
       )}
     </div>

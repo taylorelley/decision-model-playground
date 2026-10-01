@@ -1,11 +1,16 @@
 import type { EvaluateRequest, EvaluateResponse, ModelInfo } from './types';
 
-/** Requests go to the Vite proxy, which forwards to TYPESAFE_BASE_URL with the key attached. */
-const API_ROOT = '/api/v1';
+/**
+ * Requests go to the playground server's proxy, which maps them to DECISION_BASE_URL
+ * (+ DECISION_ENDPOINT_PATH / DECISION_MODELS_PATH) and attaches the API key.
+ */
+const EVALUATE_URL = '/api/evaluate';
+const MODELS_URL = '/api/models';
 
 export interface RuntimeConfig {
   hasKey: boolean;
   baseUrl: string;
+  endpointPath: string;
   defaultModel: string;
 }
 
@@ -13,6 +18,7 @@ export interface RuntimeConfig {
 export const config: RuntimeConfig = {
   hasKey: __HAS_KEY__,
   baseUrl: __BASE_URL__,
+  endpointPath: __ENDPOINT_PATH__,
   defaultModel: __DEFAULT_MODEL__,
 };
 
@@ -24,6 +30,7 @@ export async function loadRuntimeConfig(): Promise<void> {
     const c = (await res.json()) as Partial<RuntimeConfig>;
     if (typeof c.hasKey === 'boolean') config.hasKey = c.hasKey;
     if (typeof c.baseUrl === 'string') config.baseUrl = c.baseUrl;
+    if (typeof c.endpointPath === 'string') config.endpointPath = c.endpointPath;
     if (typeof c.defaultModel === 'string') config.defaultModel = c.defaultModel;
   } catch {
     /* keep build-time values */
@@ -47,8 +54,8 @@ function hintFor(status: number, body: unknown): string {
     case 401:
     case 403:
       return config.hasKey
-        ? 'The API key was rejected. Check TYPESAFE_API_KEY in .env and restart the dev server.'
-        : 'No API key is configured. Add TYPESAFE_API_KEY to .env and restart the dev server.';
+        ? 'The API key was rejected. Check DECISION_API_KEY and restart the playground server.'
+        : 'No API key is configured. Set DECISION_API_KEY and restart the playground server.';
     case 422:
       return 'The request failed validation. The details below name the offending field.';
     case 429:
@@ -57,7 +64,11 @@ function hintFor(status: number, body: unknown): string {
       return 'The model is temporarily overloaded. Try again shortly.';
     case 502:
     case 504:
-      return `Could not reach ${config.baseUrl}. Check TYPESAFE_BASE_URL and your network.`;
+      return `Could not reach ${config.baseUrl || 'the model endpoint'}. Check DECISION_BASE_URL and your network.`;
+    case 503:
+      return config.baseUrl
+        ? 'The model service is unavailable. Try again shortly.'
+        : 'No model endpoint is configured. Set DECISION_BASE_URL and restart the playground server.';
     default:
       return typeof body === 'string' && body ? body : 'Unexpected error from the API.';
   }
@@ -81,7 +92,7 @@ export interface EvaluateResult {
   attempts: number;
 }
 
-/** POST /v1/systemone with exponential backoff on 429/529, honoring retry-after. */
+/** Evaluate a request, with exponential backoff on 429/529 and honoring retry-after. */
 export async function evaluate(
   req: EvaluateRequest,
   opts: { signal?: AbortSignal; maxAttempts?: number } = {},
@@ -89,7 +100,7 @@ export async function evaluate(
   const maxAttempts = opts.maxAttempts ?? 4;
   const started = performance.now();
   for (let attempt = 1; ; attempt++) {
-    const res = await fetch(`${API_ROOT}/systemone`, {
+    const res = await fetch(EVALUATE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req),
@@ -109,13 +120,11 @@ export async function evaluate(
   }
 }
 
-/** GET /v1/models. Falls back to the documented aliases if unavailable. */
+/** List the endpoint's models. Falls back to the configured default model if unavailable. */
 export async function listModels(): Promise<ModelInfo[]> {
-  const fallback = [...new Set([config.defaultModel, 'jev-latest', 'jev-preview'])].map((id) => ({
-    id,
-  }));
+  const fallback: ModelInfo[] = config.defaultModel ? [{ id: config.defaultModel }] : [];
   try {
-    const res = await fetch(`${API_ROOT}/models`);
+    const res = await fetch(MODELS_URL);
     if (!res.ok) return fallback;
     const body = (await res.json()) as unknown;
     const list = Array.isArray(body)

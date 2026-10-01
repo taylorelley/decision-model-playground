@@ -6,7 +6,7 @@ import { decodeRequest, encodeRequest } from './share';
 
 const req: EvaluateRequest = {
   state: { message: 'Help! My payouts have been failing for 3 days.' },
-  model: 'jev-latest',
+  model: 'example-model',
   questions: {
     is_urgent: {
       type: 'noul',
@@ -74,9 +74,10 @@ describe('codegen', () => {
     );
   });
   it('targets the configured base URL', () => {
-    expect(toCode(req, 'curl', 'https://api.example.com')).toContain(
-      'https://api.example.com/v1/systemone',
+    expect(toCode(req, 'curl', 'https://api.example.com/v1/evaluate')).toContain(
+      'https://api.example.com/v1/evaluate',
     );
-    expect(toCode(req, 'python', 'x')).toContain('client.system_one(');
+    expect(toCode(req, 'python', 'x')).toContain('requests.post(');
+    expect(toCode(req, 'curl', 'x')).toContain('$DECISION_API_KEY');
   });
 });

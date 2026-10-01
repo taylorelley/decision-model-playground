@@ -4,10 +4,10 @@ export interface GlossaryEntry {
 }
 
 export const glossary: Record<string, GlossaryEntry> = {
-  'system-one': {
-    term: 'System One model',
+  'decision-model': {
+    term: 'Decision model',
     definition:
-      'A model that makes fast, structured decisions instead of generating text. You send state and typed questions; it returns typed answers with calibrated probabilities. Jev is the first.',
+      'A model that makes fast, structured decisions instead of generating text. You send state and typed questions; it returns typed answers with probabilities your code can act on.',
   },
   state: {
     term: 'State',
@@ -47,7 +47,7 @@ export const glossary: Record<string, GlossaryEntry> = {
   probability: {
     term: 'Probability',
     definition:
-      'How likely each outcome is. Jev is trained to be calibrated: of all the answers given 0.8, about 80% should be right.',
+      'How likely each outcome is. In a well-calibrated model, of all the answers given 0.8, about 80% should be right.',
   },
   confidence: {
     term: 'Confidence',
@@ -67,7 +67,7 @@ export const glossary: Record<string, GlossaryEntry> = {
   alias: {
     term: 'Model alias',
     definition:
-      'A name like jev-latest that points to a versioned model (e.g. jev-1.13.0). Aliases move when new versions ship. Pin the version if you have tuned thresholds against it.',
+      'A name like model-latest that points to a specific versioned model (e.g. model-2.1.0). Aliases can move when new versions ship. Pin the version if you have tuned thresholds against it.',
   },
   'fan-out': {
     term: 'Fan-out',

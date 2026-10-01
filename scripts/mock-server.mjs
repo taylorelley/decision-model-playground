@@ -1,8 +1,10 @@
-// A tiny stand-in for POST /v1/systemone, for UI development and offline demos.
+// A tiny stand-in for a decision model API, for UI development and offline demos.
 // Answers are deterministic pseudo-random numbers, NOT real model output.
 //
 //   npm run mock                      # listens on http://localhost:8787
-//   TYPESAFE_BASE_URL=http://localhost:8787 TYPESAFE_API_KEY=mock npm run dev
+//   DECISION_BASE_URL=http://localhost:8787 DECISION_API_KEY=mock npm run dev
+//
+// Serves POST /v1/systemone (the default DECISION_ENDPOINT_PATH) and GET /v1/models.
 import http from 'node:http';
 
 const PORT = Number(process.env.MOCK_PORT ?? 8787);
@@ -79,8 +81,8 @@ http
     if (req.method === 'GET' && req.url === '/v1/models') {
       return send(res, 200, {
         data: [
-          { id: 'jev-latest', description: 'Mock of the latest stable Jev' },
-          { id: 'jev-preview', description: 'Mock of the preview alias' },
+          { id: 'mock-latest', description: 'Mock decision model (random answers)' },
+          { id: 'mock-preview', description: 'Another mock alias' },
         ],
       });
     }
@@ -114,7 +116,7 @@ http
       setTimeout(
         () =>
           send(res, 200, {
-            model: 'jev-mock-0.0.0',
+            model: 'mock-0.0.0',
             answers,
             usage: { input_tokens: inputTokens, output_tokens: 6 * Object.keys(answers).length },
           }),
@@ -122,4 +124,4 @@ http
       );
     });
   })
-  .listen(PORT, () => console.log(`Mock System One API on http://localhost:${PORT}`));
+  .listen(PORT, () => console.log(`Mock decision model API on http://localhost:${PORT}`));

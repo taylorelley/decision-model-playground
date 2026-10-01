@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ConfidenceExplorer } from '../components/ConfidenceExplorer';
-import { ExternalLink, SectionLabel, TypeBadge } from '../components/ui';
+import { config } from '../api/client';
+import { SectionLabel, TypeBadge } from '../components/ui';
 import { glossary } from '../content/glossary';
-
-const DOCS = 'https://docs.typesafe.ai';
 
 export function ConceptsPage() {
   return (
@@ -11,24 +10,24 @@ export function ConceptsPage() {
       <SectionLabel>Concepts</SectionLabel>
       <h1 className="mt-1 text-3xl font-semibold tracking-tight">How decision models work</h1>
 
-      <H2 id="system-one">Decision models are not chatbots</H2>
+      <H2 id="decision-models">Decision models are not chatbots</H2>
       <p className="text-muted">
         An LLM generates text, and you then have to parse that text and hope it is right. A{' '}
-        <strong className="text-ink">System One</strong> decision model like Jev takes a{' '}
-        <em>state</em> and a set of <em>typed questions</em> and returns typed answers with{' '}
-        <strong className="text-ink">calibrated probabilities</strong>. Your code stays in control.
-        The model makes narrow, fast judgments, and your code decides what to do with them.
+        <strong className="text-ink">decision model</strong> takes a <em>state</em> and a set of{' '}
+        <em>typed questions</em> and returns typed answers with{' '}
+        <strong className="text-ink">probabilities</strong>. Your code stays in control. The model
+        makes narrow, fast judgments, and your code decides what to do with them.
       </p>
       <Callout>
-        Jev does not stream text, call tools or chat. It cannot power a coding agent. Use it{' '}
-        <em>inside</em> the software you build, wherever you need a structured decision.{' '}
-        <ExternalLink href={`${DOCS}/introduction/coding-agents`}>More on this</ExternalLink>
+        A decision model does not stream text, call tools or chat, so it cannot replace the LLM
+        behind a chatbot or coding agent. Use it <em>inside</em> the software you build, wherever
+        you need a structured decision.
       </Callout>
 
       <H2 id="request">Anatomy of a request</H2>
-      <pre className="overflow-auto rounded-lg border border-line bg-surface p-4 font-mono text-xs">{`POST /v1/systemone
+      <pre className="overflow-auto rounded-lg border border-line bg-surface p-4 font-mono text-xs">{`POST ${config.endpointPath}
 {
-  "model": "jev-latest",            // which model answers
+  "model": "your-model-name",       // which model answers
   "state": "Help! My payouts have been failing for 3 days.",
   "questions": {                    // you choose the keys
     "is_urgent": {                  // ← the key is NOT shown to the model
@@ -40,8 +39,7 @@ export function ConceptsPage() {
       <p className="mt-3 text-muted">
         The response contains <code className="font-mono">answers</code> keyed by your question ids,
         the versioned <code className="font-mono">model</code> that answered, and token{' '}
-        <code className="font-mono">usage</code>. Billing is per input token, and output tokens are
-        free.
+        <code className="font-mono">usage</code>.
       </p>
 
       <H2 id="primitives">Choosing a primitive</H2>
@@ -109,23 +107,19 @@ export function ConceptsPage() {
       <ul className="space-y-2 text-muted">
         <li>
           <strong className="text-ink">Speculative fan-out:</strong> ask many questions in one call,
-          including ones you might not need. The state is read once.{' '}
-          <ExternalLink href={`${DOCS}/patterns/fan-out`}>Docs</ExternalLink>
+          including ones you might not need. The state is read once.
         </li>
         <li>
           <strong className="text-ink">Confidence-gated routing:</strong> the answer tells you what;
-          confidence tells you whether to act.{' '}
-          <ExternalLink href={`${DOCS}/patterns/confidence-routing`}>Docs</ExternalLink>
+          confidence tells you whether to act.
         </li>
         <li>
           <strong className="text-ink">Composite scoring:</strong> split a broad judgment into
-          atomic scores and combine them with weights in code.{' '}
-          <ExternalLink href={`${DOCS}/patterns/composite-scoring`}>Docs</ExternalLink>
+          atomic scores and combine them with weights in code.
         </li>
         <li>
           <strong className="text-ink">Intent routing:</strong> classify a request and send it to
-          deterministic code, a specialist LLM or a human.{' '}
-          <ExternalLink href={`${DOCS}/patterns/intent-routing`}>Docs</ExternalLink>
+          deterministic code, a specialist LLM or a human.
         </li>
       </ul>
       <p className="mt-3 text-muted">
@@ -153,8 +147,8 @@ export function ConceptsPage() {
           option, when the state may not contain the answer.
         </li>
         <li>
-          Pin a versioned model (e.g. <code className="font-mono">jev-1.13.0</code>) once you tune
-          thresholds against it. Aliases move.
+          Pin a specific model version once you tune thresholds against it. Aliases like{' '}
+          <code className="font-mono">-latest</code> can move to a new version without warning.
         </li>
       </ul>
 
@@ -167,26 +161,6 @@ export function ConceptsPage() {
           </div>
         ))}
       </dl>
-
-      <H2 id="docs">Further reading</H2>
-      <ul className="space-y-1">
-        <li>
-          <ExternalLink href={`${DOCS}/api`}>API reference</ExternalLink>
-        </li>
-        <li>
-          <ExternalLink href={`${DOCS}/concepts/how-to-build-with-system-one`}>
-            How to build with TypeSafe
-          </ExternalLink>
-        </li>
-        <li>
-          <ExternalLink href={`${DOCS}/model-jaggedness/jev-1.13`}>
-            Known jagged edges of jev-1.13
-          </ExternalLink>
-        </li>
-        <li>
-          <ExternalLink href={`${DOCS}/cookbooks`}>Cookbooks</ExternalLink>
-        </li>
-      </ul>
     </div>
   );
 }

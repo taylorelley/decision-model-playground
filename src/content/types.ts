@@ -6,11 +6,6 @@ export interface RequestTemplate {
   questions: Record<string, Question>;
 }
 
-export interface DocLink {
-  label: string;
-  url: string;
-}
-
 export interface LessonStep {
   title: string;
   /** Paragraphs. Supports `code`, **bold**, [[glossary-term]] and [label](url). */
@@ -29,7 +24,6 @@ export interface Lesson {
   primitive: 'Noul' | 'Choice' | 'Score' | 'Concept';
   icon: string;
   steps: LessonStep[];
-  docs: DocLink[];
 }
 
 export type ExampleCategory =
@@ -49,6 +43,5 @@ export interface Example {
   /** How code would act on the answers. */
   inCode?: string;
   caution?: string;
-  docs: DocLink[];
   request: RequestTemplate;
 }

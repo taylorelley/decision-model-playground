@@ -5,10 +5,10 @@ describe('peakConfidence', () => {
     expect(peakConfidence([1 / 3, 1 / 3, 1 / 3])).toBeCloseTo(0);
     expect(peakConfidence([1, 0, 0])).toBe(1);
   });
-  it('matches the docs explorer default (90/6/4 → 0.85)', () => {
+  it('gives 0.85 for a 90/6/4 split', () => {
     expect(peakConfidence([0.9, 0.06, 0.04])).toBeCloseTo(0.85);
   });
-  it('is close to the API examples in the docs', () => {
+  it('is close to sample API responses', () => {
     expect(peakConfidence([0.88, 0.12, 0])).toBeCloseTo(0.81, 1);
     expect(peakConfidence([0, 0.95, 0.05])).toBeCloseTo(0.92, 1);
   });
@@ -18,7 +18,7 @@ describe('peakConfidence', () => {
 });
 
 describe('expectedLevel', () => {
-  it('reproduces the docs score example', () => {
+  it('reproduces a sample score answer', () => {
     expect(expectedLevel({ '0': 0, '1': 0.95, '2': 0.05 })).toBeCloseTo(1.05);
   });
 });

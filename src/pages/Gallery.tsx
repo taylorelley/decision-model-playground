@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, ExternalLink, SectionLabel, TypeBadge, cx } from '../components/ui';
+import { Button, SectionLabel, TypeBadge, cx } from '../components/ui';
 import { categories, examples } from '../content/examples';
 import type { Example, ExampleCategory } from '../content/types';
 import { primitivesUsed } from '../lib/primitives';
@@ -43,11 +43,6 @@ export function GalleryPage() {
           <ExampleCard key={e.id} example={e} />
         ))}
       </div>
-      <p className="mt-10 text-xs text-muted">
-        Looking for more ideas? See the community list{' '}
-        <ExternalLink href="https://github.com/yibie/awesome-jev">awesome-jev</ExternalLink> and the{' '}
-        <ExternalLink href="https://docs.typesafe.ai/cookbooks">TypeSafe cookbooks</ExternalLink>.
-      </p>
     </div>
   );
 }
@@ -101,13 +96,6 @@ function ExampleCard({ example: e }: { example: Example }) {
           Open in Developer
         </Button>
         <span className="ml-auto text-xs text-faint">{n} questions</span>
-      </div>
-      <div className="mt-2 flex flex-wrap gap-x-3 text-xs">
-        {e.docs.map((d) => (
-          <ExternalLink key={d.url} href={d.url}>
-            {d.label}
-          </ExternalLink>
-        ))}
       </div>
     </article>
   );

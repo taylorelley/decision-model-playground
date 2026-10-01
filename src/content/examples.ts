@@ -1,7 +1,5 @@
 import type { Example, ExampleCategory } from './types';
 
-const DOCS = 'https://docs.typesafe.ai';
-
 export const categories: ExampleCategory[] = [
   'Classification & Routing',
   'Verification & Guardrails',
@@ -20,7 +18,6 @@ export const examples: Example[] = [
     inCode:
       'Build a shortlist in code: require technical_depth ≥ 3, then sort by a weighted sum. Send anything with confidence < 0.5 to a recruiter.',
     caution: 'Hiring decisions affect people. Use this to help reviewers, never to auto-reject.',
-    docs: [{ label: 'Composite scoring', url: `${DOCS}/patterns/composite-scoring` }],
     request: {
       state: {
         resume:
@@ -98,7 +95,6 @@ export const examples: Example[] = [
     category: 'Verification & Guardrails',
     why: 'QA reviewers check a fixed set of behaviours on every transcript. Each behaviour is a Noul, and overall tone is a Score. You can audit every conversation instead of a 2% sample.',
     inCode: 'Flag the session for coaching if any policy Noul is below 0.3 or empathy ≤ 1.',
-    docs: [{ label: 'Speculative fan-out', url: `${DOCS}/patterns/fan-out` }],
     request: {
       state: {
         policy:
@@ -163,7 +159,6 @@ export const examples: Example[] = [
     why: 'Each hazard is a Noul, so you can set a different threshold per hazard. Severity is a Score. One request screens a message for every hazard in a few milliseconds, before it reaches your LLM.',
     inCode:
       'block if jailbreak > 0.8 or severity ≥ 3; send to review if any hazard is between 0.4 and 0.8; otherwise pass.',
-    docs: [{ label: 'Guardrails for LLMs', url: `${DOCS}/cookbooks/llm_guardrails` }],
     request: {
       state: {
         app_purpose: 'A cooking assistant for a recipe website.',
@@ -201,7 +196,6 @@ export const examples: Example[] = [
     why: 'Each handler is an option in a Choice. Some handlers are deterministic code, some are a specialist LLM, and one is a human. Confidence decides whether to route straight away or ask which the user meant.',
     inCode:
       'route(choice) when confidence ≥ 0.7; otherwise ask the user to choose between the top two options.',
-    docs: [{ label: 'Intent routing', url: `${DOCS}/patterns/intent-routing` }],
     request: {
       state:
         'my package says delivered but it is not here and I need the charger for a trip tomorrow',
@@ -230,9 +224,6 @@ export const examples: Example[] = [
     tagline: 'Label user posts against a policy',
     category: 'Classification & Routing',
     why: 'The policy categories form a Choice, and an "uncertain" option gives the model a place to say it is unsure. Separate Nouls check context such as satire or quoting, which changes the action you take.',
-    docs: [
-      { label: 'Self-consistency: choices', url: `${DOCS}/cookbooks/consistency_choice_cookbook` },
-    ],
     request: {
       state: {
         community: 'A gaming forum',
@@ -263,9 +254,6 @@ export const examples: Example[] = [
     tagline: 'Decide which retrieved passages reach the LLM',
     category: 'Scoring & Ranking',
     why: 'Each passage gets a relevance Score, and one Noul asks whether the passages together can answer the question at all. Your code keeps the passages above a cut-off.',
-    docs: [
-      { label: 'Classifying RAG passages', url: `${DOCS}/cookbooks/classifying_rag_passages` },
-    ],
     request: {
       state: {
         query: 'How long do I have to return an opened item?',
@@ -304,7 +292,6 @@ export const examples: Example[] = [
     tagline: 'Catch quotes that do not support the claim',
     category: 'Verification & Guardrails',
     why: 'Whether a source supports, contradicts or ignores a claim is one of several outcomes, so it is a Choice. You can run it on every citation an LLM produces, before showing the answer.',
-    docs: [{ label: 'Double-checking citations', url: `${DOCS}/cookbooks/citation_check` }],
     request: {
       state: {
         claim: 'The study found that remote workers were 30% more productive.',
@@ -332,7 +319,6 @@ export const examples: Example[] = [
     category: 'Scoring & Ranking',
     why: '"Is this a good lead?" is hard to answer as one question. Break it into budget, authority, need and timing, ask each one separately, and combine the answers with weights you can tune and explain.',
     inCode: 'lead_score = 0.3·budget/3 + 0.2·authority + 0.3·need/3 + 0.2·timing/3',
-    docs: [{ label: 'Composite scoring', url: `${DOCS}/patterns/composite-scoring` }],
     request: {
       state: {
         inbound_email:
@@ -376,7 +362,6 @@ export const examples: Example[] = [
     why: 'The action is a Choice. Confidence is a second axis: what to do, and whether to do it without asking. Riskier actions get higher thresholds.',
     inCode:
       'confidence < 0.5 → clarify; check_balance → run; approve_transfer needs confidence > 0.9 and amount_present > 0.8.',
-    docs: [{ label: 'Confidence-gated routing', url: `${DOCS}/patterns/confidence-routing` }],
     request: {
       state: 'send 200 to mum for her birthday',
       questions: {
@@ -407,10 +392,6 @@ export const examples: Example[] = [
     tagline: 'Pick the next tool for an agent turn',
     category: 'Agent Decisions',
     why: 'An agent’s tools form a closed set, so choosing one is a Choice, with each tool described in its criteria. A Noul checks whether the agent should stop and ask the user instead.',
-    docs: [
-      { label: 'Function calling', url: `${DOCS}/cookbooks/function_calling` },
-      { label: 'Skill suggestion', url: `${DOCS}/cookbooks/skill_suggestion` },
-    ],
     request: {
       state: {
         goal: 'Find out why the nightly ETL job failed and tell the on-call engineer.',
@@ -445,10 +426,6 @@ export const examples: Example[] = [
       'alert controller if loss_of_separation_risk > 0.3 or squawk_emergency > 0.2 or readback_mismatch > 0.4; only show recommended_action as a suggestion when confidence ≥ 0.8; otherwise show "no advisory".',
     caution:
       'Fictional data, for teaching only. Real ATC needs certified systems. A decision model can help a human prioritise, but must never issue clearances.',
-    docs: [
-      { label: 'Confidence-gated routing', url: `${DOCS}/patterns/confidence-routing` },
-      { label: 'Speculative fan-out', url: `${DOCS}/patterns/fan-out` },
-    ],
     request: {
       state: {
         sector: 'ZXX-34 (fictional en-route sector), time 14:32:10Z',

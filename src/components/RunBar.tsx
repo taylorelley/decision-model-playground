@@ -39,7 +39,9 @@ export function RunBar() {
           spellCheck={false}
           className="h-7 w-40 rounded border border-line bg-sunken px-2 font-mono text-xs text-ink focus:border-accent focus:outline-none"
           aria-label="Model"
-          title={current?.description ?? 'Any model served by a compatible /v1/systemone endpoint'}
+          title={
+            current?.description ?? 'Any model served by the configured decision model endpoint'
+          }
         />
         <datalist id={listId}>
           {models.map((m) => (

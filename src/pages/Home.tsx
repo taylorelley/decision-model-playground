@@ -24,11 +24,10 @@ export function HomePage() {
         Learn how decision models think
       </h1>
       <p className="mt-3 max-w-2xl text-muted">
-        Decision models such as TypeSafe’s <span className="font-mono text-ink">jev</span> don’t
-        write text. They read a <strong className="text-ink">state</strong>, answer typed{' '}
-        <strong className="text-ink">questions</strong>, and return calibrated probabilities that
-        your code can act on. This playground teaches you how to ask good questions and how to read
-        the answers.
+        Decision models don’t write text. They read a <strong className="text-ink">state</strong>,
+        answer typed <strong className="text-ink">questions</strong>, and return calibrated
+        probabilities that your code can act on. This playground teaches you how to ask good
+        questions and how to read the answers.
       </p>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -98,8 +97,8 @@ export function HomePage() {
         >
           <div className="font-semibold">Developer mode</div>
           <p className="mt-1 text-sm text-muted">
-            JSON editors like the TypeSafe console, the raw response, and copy-ready curl,
-            JavaScript and Python. Both modes edit the same request.
+            Raw JSON editors, the raw response, and copy-ready curl, JavaScript and Python. Both
+            modes edit the same request.
           </p>
         </button>
       </div>
