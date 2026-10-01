@@ -39,11 +39,12 @@ cp .env.example .env      # then set TYPESAFE_API_KEY
 npm run dev               # http://localhost:5173
 ```
 
-| Variable            | Default                   | Purpose                                                   |
-| ------------------- | ------------------------- | --------------------------------------------------------- |
-| `TYPESAFE_API_KEY`  | —                         | Your API key (console.typesafe.ai → API Keys)             |
-| `TYPESAFE_BASE_URL` | `https://api.typesafe.ai` | Any server implementing `POST /v1/systemone`              |
-| `DEFAULT_MODEL`     | `jev-latest`              | Model preselected in the playground (free text in the UI) |
+| Variable              | Default                   | Purpose                                                                       |
+| --------------------- | ------------------------- | ----------------------------------------------------------------------------- |
+| `TYPESAFE_API_KEY`    | —                         | Your API key (console.typesafe.ai → API Keys)                                 |
+| `TYPESAFE_BASE_URL`   | `https://api.typesafe.ai` | Any server implementing `POST /v1/systemone`                                  |
+| `DEFAULT_MODEL`       | `jev-latest`              | Model preselected in the playground (free text in the UI)                     |
+| `TYPESAFE_VERIFY_TLS` | `false`                   | Set to `true` to verify the API's TLS certificate (off by default; see below) |
 
 ### Docker
 
@@ -69,6 +70,17 @@ The TypeSafe API doesn't accept browser (CORS) requests from `localhost`. Instea
 `Authorization: Bearer $TYPESAFE_API_KEY`. That proxy is the only server-side piece, and it is
 configured in `vite.config.ts`. That file also serves the non-secret settings (whether a key is set, the endpoint, the default model) at `/__playground/config`. The key stays in the Vite process and is never bundled into
 browser code. `npm run build && npm run preview` uses the same proxy.
+
+### TLS certificate verification
+
+By default, the `/api` proxy **does not verify** the upstream server's TLS certificate, both in local
+dev and in Docker. This lets the app work behind corporate TLS-inspecting proxies and with
+self-signed certificates on compatible servers. It applies only to the proxy's call to
+`TYPESAFE_BASE_URL`, not to the rest of Node, and the server logs a warning at startup.
+
+The trade-off: anyone who can intercept that connection could read your API key. On a trusted
+network, set `TYPESAFE_VERIFY_TLS=true` (in `.env`, or with `-e` for Docker) to turn verification
+back on.
 
 ### Using a compatible model
 

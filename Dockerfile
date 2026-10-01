@@ -21,7 +21,8 @@ FROM node:22-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production \
     TYPESAFE_BASE_URL=https://api.typesafe.ai \
-    DEFAULT_MODEL=jev-latest
+    DEFAULT_MODEL=jev-latest \
+    TYPESAFE_VERIFY_TLS=false
 # vite.config.ts (and the Vite plugins it imports) is needed at run time for the proxy.
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist

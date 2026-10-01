@@ -7,17 +7,27 @@ import tailwindcss from '@tailwindcss/vite';
 // browser talks to `/api/*` on the Vite server, which forwards the call upstream
 // and attaches the API key. The key stays in this Node process and is never sent
 // to the browser bundle.
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const apiKey = env.TYPESAFE_API_KEY ?? '';
   const baseUrl = (env.TYPESAFE_BASE_URL || 'https://api.typesafe.ai').replace(/\/+$/, '');
   const defaultModel = env.DEFAULT_MODEL || 'jev-latest';
+  // TLS certificate verification for the upstream API is OFF by default, so the app keeps
+  // working behind TLS-intercepting proxies or with self-signed certificates. Only the /api
+  // proxy's outbound call is affected. Set TYPESAFE_VERIFY_TLS=true to turn checks back on.
+  const verifyTls = /^(1|true|yes|on)$/i.test(env.TYPESAFE_VERIFY_TLS ?? '');
+  if (!verifyTls && command === 'serve' && !process.env.VITEST && baseUrl.startsWith('https:')) {
+    console.warn(
+      `[playground] TLS certificate verification is disabled for ${baseUrl}. ` +
+        'Set TYPESAFE_VERIFY_TLS=true to enable it.',
+    );
+  }
 
   const apiProxy: Record<string, ProxyOptions> = {
     '/api': {
       target: baseUrl,
       changeOrigin: true,
-      secure: true,
+      secure: verifyTls,
       rewrite: (path) => path.replace(/^\/api/, ''),
       configure: (proxy) => {
         proxy.on('proxyReq', (proxyReq) => {
