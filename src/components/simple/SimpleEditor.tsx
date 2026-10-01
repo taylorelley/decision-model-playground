@@ -52,7 +52,7 @@ export function SimpleEditor() {
           aria-label="State"
           value={draft.stateText}
           onChange={(e) => setStateText(e.target.value)}
-          placeholder="Paste the text to evaluate: a message, a document, a resumé… or a JSON object with named fields."
+          placeholder="Paste the text to evaluate: a pilot transmission, a METAR, a NOTAM, a fault log… or a JSON object with named fields."
           className={cx(
             'max-h-[28rem] overflow-auto!',
             kind === 'object' || kind === 'array' ? 'min-h-32 font-mono text-xs' : 'min-h-24',
@@ -60,8 +60,8 @@ export function SimpleEditor() {
         />
         <Hint>
           What the model should look at. Plain text works. A JSON object lets you name each piece
-          (e.g. <code className="font-mono">ticket</code>, <code className="font-mono">policy</code>
-          ) and refer to it in questions.
+          (e.g. <code className="font-mono">clearance</code>,{' '}
+          <code className="font-mono">readback</code>) and refer to it in questions.
         </Hint>
       </section>
 

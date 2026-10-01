@@ -22,9 +22,9 @@ export const typeBg: Record<QuestionType, string> = {
   score: 'bg-score',
 };
 export const typeBlurb: Record<QuestionType, { what: string; example: string }> = {
-  noul: { what: 'Evaluate how true something is', example: 'Is `food` a sandwich?' },
-  score: { what: 'Set up a rubric to grade with', example: 'How much did `subject` contribute?' },
-  choice: { what: 'Ask a multiple choice question', example: 'What color is `object`?' },
+  noul: { what: 'Evaluate how true something is', example: 'Does `readback` match `clearance`?' },
+  score: { what: 'Set up a rubric to grade with', example: 'How severe was `occurrence`?' },
+  choice: { what: 'Ask a multiple choice question', example: 'Which runway suits `metar`?' },
 };
 
 export function TypeBadge({ type, className }: { type: QuestionType; className?: string }) {

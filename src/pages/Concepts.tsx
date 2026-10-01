@@ -28,11 +28,11 @@ export function ConceptsPage() {
       <pre className="overflow-auto rounded-lg border border-line bg-surface p-4 font-mono text-xs">{`POST ${config.endpointPath}
 {
   "model": "your-model-name",       // which model answers
-  "state": "Help! My payouts have been failing for 3 days.",
+  "state": "ANZ529, PAN PAN, medical emergency, request diversion",
   "questions": {                    // you choose the keys
     "is_urgent": {                  // ← the key is NOT shown to the model
       "type": "noul",
-      "instructions": "Does this convey urgency?"
+      "instructions": "Is the crew declaring an urgency?"
     }
   }
 }`}</pre>
@@ -58,7 +58,8 @@ export function ConceptsPage() {
                 <TypeBadge type="noul" />
               </td>
               <td className="p-2.5">
-                A statement is true or false: “is this spam?”, “did they agree?”
+                A statement is true or false: “is the readback correct?”, “is this squawk an
+                emergency?”
               </td>
               <td className="p-2.5 font-mono">noul: 0–1</td>
             </tr>
@@ -67,7 +68,8 @@ export function ConceptsPage() {
                 <TypeBadge type="choice" />
               </td>
               <td className="p-2.5">
-                Exactly one of several unordered categories applies: routing, labels, tools.
+                Exactly one of several unordered categories applies: fault team, message type,
+                runway.
               </td>
               <td className="p-2.5 font-mono">choice, probabilities, confidence</td>
             </tr>
@@ -75,7 +77,9 @@ export function ConceptsPage() {
               <td className="p-2.5">
                 <TypeBadge type="score" />
               </td>
-              <td className="p-2.5">Answers have a natural order: severity, quality, how much.</td>
+              <td className="p-2.5">
+                Answers have a natural order: severity, workload, operational impact.
+              </td>
               <td className="p-2.5 font-mono">score, legend, probabilities, confidence</td>
             </tr>
           </tbody>
@@ -88,10 +92,10 @@ export function ConceptsPage() {
 
       <H2 id="confidence">Probability vs. confidence</H2>
       <p className="mb-4 text-muted">
-        <strong className="text-ink">Probability</strong> is about one outcome: “70% that it’s
-        billing”. <strong className="text-ink">Confidence</strong> is about the whole distribution:
-        is the probability concentrated on one option, or spread out? Drag the sliders to see the
-        difference.
+        <strong className="text-ink">Probability</strong> is about one outcome: “70% that it’s a
+        network fault”. <strong className="text-ink">Confidence</strong> is about the whole
+        distribution: is the probability concentrated on one option, or spread out? Drag the sliders
+        to see the difference.
       </p>
       <ConfidenceExplorer />
       <p className="mt-4 text-muted">
@@ -99,8 +103,8 @@ export function ConceptsPage() {
         <strong className="text-good">high</strong>, act automatically;{' '}
         <strong className="text-warn">medium</strong>, confirm or flag for review;{' '}
         <strong className="text-bad">low</strong>, don’t act, so route to a human or ask for more
-        context. Set the thresholds by risk. A read-only lookup can act at a lower confidence than a
-        money transfer.
+        context. Set the thresholds by risk. Showing a system’s status can act at a lower confidence
+        than restarting a live ATC service, and some actions should never be automatic at all.
       </p>
 
       <H2 id="patterns">Patterns</H2>

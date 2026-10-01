@@ -7,10 +7,11 @@ import { LessonGrid } from './Learn';
 import { useOpenExample } from './Gallery';
 
 const FEATURED_EXAMPLES = [
-  'resume-screening',
-  'support-audit',
-  'llm-guardrails',
   'atc-conflict-triage',
+  'cpdlc-oceanic',
+  'surveillance-alert-triage',
+  'occurrence-report',
+  'change-risk',
 ];
 
 export function HomePage() {
@@ -19,15 +20,20 @@ export function HomePage() {
   const { setMode } = usePlayground();
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
-      <SectionLabel>Decision model playground</SectionLabel>
+      <SectionLabel>Decision models for air traffic management · Aotearoa New Zealand</SectionLabel>
       <h1 className="mt-1 text-4xl font-semibold tracking-tight">
         Learn how decision models think
       </h1>
       <p className="mt-3 max-w-2xl text-muted">
-        Decision models don’t write text. They read a <strong className="text-ink">state</strong>,
-        answer typed <strong className="text-ink">questions</strong>, and return calibrated
-        probabilities that your code can act on. This playground teaches you how to ask good
-        questions and how to read the answers.
+        A hands-on course for ATC systems engineers. Decision models don’t write text: they read a{' '}
+        <strong className="text-ink">state</strong>, such as a sector snapshot, a readback, a NOTAM
+        or a fault log, answer typed <strong className="text-ink">questions</strong> about it, and
+        return probabilities your code can act on. Learn how to ask good questions, how to read the
+        answers, and where a human must stay in the loop.
+      </p>
+      <p className="mt-3 max-w-2xl rounded-md border border-warn/30 bg-warn/10 px-3 py-2 text-xs text-ink">
+        Training use only. All scenarios, callsigns, waypoints, frequencies and documents are
+        fictional or simplified, and no answer here is operational advice.
       </p>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -54,7 +60,7 @@ export function HomePage() {
         </Link>
       </div>
 
-      <SectionLabel className="mt-10 mb-3">Real-life use cases</SectionLabel>
+      <SectionLabel className="mt-10 mb-3">ATC and engineering use cases</SectionLabel>
       <div className="border-t border-line">
         {FEATURED_EXAMPLES.map((id) => examples.find((e) => e.id === id)!).map((e) => (
           <button

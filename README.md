@@ -10,13 +10,23 @@ and to read the answers.
 ## What's inside
 
 - **Lessons**: seven step-by-step walkthroughs. Three cover the primitives: _Is a hotdog a sandwich?_,
-  _What color is the sky?_ and _Can monkeys create art?_. Four cover concepts: structured state,
-  structured instructions, fan-out, and acting on confidence. Each step loads a working request,
+  _What color is the sky?_ and _Can monkeys create art?_. Four cover concepts with ATC scenarios:
+  structured state (clearance and readback), structured instructions (duplicate flight plans),
+  fan-out (pilot transmissions), and acting on confidence (engineering ops). Each step loads a working request,
   explains what to notice, and suggests edits to try.
-- **Use-case gallery**: real-life examples ready to run, including resumé screening, support audit,
-  LLM guardrails, intent routing, moderation, RAG relevance, citation check, lead scoring,
-  confidence-gated actions, agent tool selection and **ATC conflict triage**. Each one explains why it
-  uses the primitives it does and how code would act on the answers.
+- **Use-case gallery**: ATC-first examples set in New Zealand airspace, ready to run.
+  - **ATC operations:** conflict triage, readback checks, Wellington wind and runway, CPDLC
+    downlink triage in the Auckland Oceanic FIR, NOTAM relevance, and volcanic ash impact.
+  - **ATM systems engineering:** surveillance alert triage, change request risk, requirements
+    quality, fault routing, and agent tool selection.
+  - **Safety & assurance:** occurrence report classification, assistant guardrails, and procedure
+    retrieval and citation checks.
+  - **General:** a couple of everyday examples.
+
+  Each one explains why it uses the primitives it does and how code would act on the answers. All
+  scenarios are fictional training material. Gallery requests stay within a portable subset of the
+  API, so they also run on stricter compatible servers.
+
 - **Two playground modes that edit the same request**:
   - **Simple**: forms with hints, and plain-language answers with "How to read this" explainers.
     The explainers cover P(yes), score as an expected level, and confidence worked out from the

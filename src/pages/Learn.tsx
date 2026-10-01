@@ -12,12 +12,13 @@ export function LearnPage() {
       <p className="mt-2 max-w-2xl text-sm text-muted">
         Each lesson is a short series of steps. Every step loads a working request into the
         playground, explains what to look for, and suggests edits to try. Start with the three
-        primitives, then move on to the concepts that make decision models useful in real software.
+        primitives using everyday examples, then move on to the concepts, taught with ATC scenarios:
+        readbacks, flight plans, pilot transmissions and engineering operations.
       </p>
 
       <SectionLabel className="mt-10 mb-3">The three primitives</SectionLabel>
       <LessonGrid items={primitives} />
-      <SectionLabel className="mt-10 mb-3">Building with decision models</SectionLabel>
+      <SectionLabel className="mt-10 mb-3">Building ATC decision systems</SectionLabel>
       <LessonGrid items={concepts} />
     </div>
   );

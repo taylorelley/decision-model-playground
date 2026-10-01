@@ -62,7 +62,7 @@ export const glossary: Record<string, GlossaryEntry> = {
   'question-id': {
     term: 'Question id',
     definition:
-      'The key you give each question. Answers come back under the same key. The key is not sent to the model, so naming it is_spam does not hint the answer.',
+      'The key you give each question. Answers come back under the same key. The key is not sent to the model, so naming it is_emergency does not hint the answer.',
   },
   alias: {
     term: 'Model alias',

@@ -27,11 +27,7 @@ export interface Lesson {
 }
 
 export type ExampleCategory =
-  | 'Classification & Routing'
-  | 'Verification & Guardrails'
-  | 'Scoring & Ranking'
-  | 'Agent Decisions'
-  | 'Safety-critical Ops';
+  'ATC operations' | 'ATM systems engineering' | 'Safety & assurance' | 'General';
 
 export interface Example {
   id: string;

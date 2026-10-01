@@ -13,13 +13,16 @@ export function GalleryPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
       <SectionLabel>Use-case gallery</SectionLabel>
-      <h1 className="mt-1 text-3xl font-semibold tracking-tight">
-        Real-life decisions, ready to run
-      </h1>
+      <h1 className="mt-1 text-3xl font-semibold tracking-tight">ATC decisions, ready to run</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
-        Each example is a complete request. Open it in either mode, run it, then change the state to
-        see how the answers move. Read the notes to see why each problem uses the primitives it
-        does, and how code would act on the answers.
+        Air traffic control operations, ATM systems engineering and safety assurance scenarios set
+        in New Zealand airspace, plus a few general examples. Each one is a complete request. Open
+        it in either mode, run it, then change the state to see how the answers move. The notes
+        explain why each problem uses the primitives it does, and how code would act on the answers.
+      </p>
+      <p className="mt-3 max-w-2xl rounded-md border border-warn/30 bg-warn/10 px-3 py-2 text-xs text-ink">
+        Training use only. Scenarios are fictional or simplified. In real systems the model advises
+        and people and procedures decide.
       </p>
       <div className="mt-6 flex flex-wrap gap-1.5" role="group" aria-label="Filter by category">
         {(['All', ...categories] as const).map((c) => (

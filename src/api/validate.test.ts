@@ -73,3 +73,27 @@ describe('validateRequest', () => {
     },
   );
 });
+
+describe('gallery content', () => {
+  it('lists ATC categories before general examples', () => {
+    const firstGeneral = examples.findIndex((e) => e.category === 'General');
+    expect(examples[0].category).toBe('ATC operations');
+    expect(examples.slice(firstGeneral).every((e) => e.category === 'General')).toBe(true);
+  });
+
+  // Stricter compatible servers accept only plain-string instructions, string score levels,
+  // unique labels and at most 50 options. Gallery examples stay inside that subset.
+  it.each(examples.map((e) => [e.id, e.request] as const))('example %s is portable', (_, req) => {
+    for (const [id, q] of Object.entries(req.questions)) {
+      expect(typeof q.instructions, `${id}.instructions`).toBe('string');
+      if (q.type === 'score') {
+        expect(
+          q.criteria.every((c) => typeof c === 'string'),
+          `${id} levels`,
+        ).toBe(true);
+        expect(new Set(q.criteria).size, `${id} unique levels`).toBe(q.criteria.length);
+      }
+      if (q.type === 'choice') expect(Object.keys(q.criteria).length).toBeLessThanOrEqual(50);
+    }
+  });
+});

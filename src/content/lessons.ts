@@ -115,7 +115,7 @@ export const lessons: Lesson[] = [
           'A [[choice]] question picks one option from a set you define. The options are the keys of `criteria`. Use `null` when an option needs no description.',
         ],
         request: {
-          state: 'It is noon on a clear, cloudless summer day in Arizona.',
+          state: 'It is noon on a clear, cloudless summer day over Lake Tekapo.',
           questions: {
             sky_color: {
               type: 'choice',
@@ -137,7 +137,7 @@ export const lessons: Lesson[] = [
         ],
         request: {
           state:
-            'The sun is setting over the ocean while a dark storm front rolls in from the west.',
+            'The sun is setting over the Tasman Sea while a dark southerly front rolls up the coast.',
           questions: {
             sky_color: {
               type: 'choice',
@@ -160,7 +160,7 @@ export const lessons: Lesson[] = [
         ],
         request: {
           state:
-            'The sun is setting over the ocean while a dark storm front rolls in from the west.',
+            'The sun is setting over the Tasman Sea while a dark southerly front rolls up the coast.',
           questions: {
             dominant_sky_color: {
               type: 'choice',
@@ -283,90 +283,108 @@ export const lessons: Lesson[] = [
   {
     id: 'structured-state',
     title: 'Structured state',
-    subtitle: 'Give the model a case file, not a paragraph',
+    subtitle: 'Give the model a strip, a clearance and a readback',
     primitive: 'Concept',
     icon: '🗂️',
     steps: [
       {
         title: 'A plain string',
         body: [
-          'The simplest [[state]] is a string, which works well for a single message or passage.',
+          'The simplest [[state]] is a string, which works well for a single transmission, a METAR or a NOTAM.',
         ],
         request: {
-          state: 'I was charged twice for order A-104. Please refund the duplicate.',
+          state:
+            'Wellington Approach, ANZ1043, request descent, we are getting moderate turbulence at flight level two one zero.',
           questions: {
-            wants_refund: { type: 'noul', instructions: 'Is the customer asking for a refund?' },
+            requests_descent: {
+              type: 'noul',
+              instructions: 'Is the pilot requesting a lower level?',
+            },
+            reports_turbulence: {
+              type: 'noul',
+              instructions: 'Does the pilot report turbulence?',
+            },
           },
         },
         notice: [
-          'Fine for one piece of text. But what if the decision needs a policy and an order record as well?',
+          'Fine for one transmission. But checking a readback means comparing it against the clearance that was issued. One string can’t hold both clearly.',
         ],
       },
       {
         title: 'A case file as an object',
         body: [
-          'Put related information together in one JSON object, with descriptive keys. Think of it as the folder you would hand to a panel of experts before asking them to decide.',
+          'Put related information together in one JSON object, with descriptive keys. Think of it as the strip, the clearance and the tape you would hand to a supervisor before asking them to decide.',
         ],
         request: {
           state: {
-            ticket: {
-              subject: 'Duplicate charge',
-              messages: [
-                {
-                  from: 'customer',
-                  text: 'I was charged twice for order A-104. Please refund the duplicate.',
-                },
-                { from: 'support', text: 'We are checking the charges.' },
-              ],
+            flight: {
+              callsign: 'ANZ1043',
+              type: 'A320',
+              route: 'NZAA → NZWN',
+              cleared_level: 'FL210',
             },
-            order: {
-              id: 'A-104',
-              charges: [
-                { amount_usd: 49, status: 'captured' },
-                { amount_usd: 49, status: 'captured' },
-              ],
-            },
-            refund_policy: 'Duplicate charges are eligible for a refund.',
+            clearance:
+              'ANZ1043, descend to 7000 feet, QNH 1009, turn right heading 340, contact Wellington Approach 119.3',
+            readback: 'Descend 7000 feet, QNH 1019, right heading 340, 119.3, ANZ1043',
+            note: 'Fictional frequencies and callsign usage, for training only.',
           },
           questions: {
-            wants_refund: { type: 'noul', instructions: 'Did the customer request a refund?' },
-            duplicate_confirmed: {
+            level_correct: {
               type: 'noul',
-              instructions: 'Does `order.charges` show the same amount captured more than once?',
+              instructions: 'Does the level in `readback` match the level in `clearance`?',
             },
-            policy_allows: {
+            qnh_correct: {
               type: 'noul',
-              instructions: 'Does `refund_policy` support refunding this request?',
+              instructions: 'Does the QNH in `readback` match the QNH in `clearance`?',
+            },
+            heading_correct: {
+              type: 'noul',
+              instructions: 'Does the heading in `readback` match the heading in `clearance`?',
             },
           },
         },
         notice: [
-          'Questions point at nested fields like `order.charges` using backticks.',
-          'Each check is separate, so your code can require all three before it issues a refund.',
+          'Questions point at named fields like `readback` and `clearance` using backticks.',
+          'Each element is checked separately, so your code can say exactly which one was wrong: here, the QNH (1019 read back for 1009).',
         ],
-        tryThis: ['Change the second charge to `"status": "voided"` and rerun.'],
+        tryThis: ['Correct the readback to QNH 1009 and rerun.'],
       },
       {
         title: 'Arrays for sequences',
-        body: ['An array suits ordered things, such as chat turns or log lines.'],
+        body: [
+          'An array suits ordered things, such as an exchange of transmissions or a run of system log lines.',
+        ],
         request: {
           state: [
-            'Hi, I need help with my account.',
-            'My customer number is TS1337.',
-            'Actually never mind, I figured it out. Thanks!',
+            'Christchurch Control, ZK-MKT, request climb to flight level two one zero.',
+            'ZK-MKT, climb flight level two one zero.',
+            'Climb flight level two three zero, ZK-MKT.',
+            'ZK-MKT, negative, climb flight level two one zero, I say again two one zero.',
+            'Climb flight level two one zero, ZK-MKT, sorry about that.',
           ],
           questions: {
-            still_needs_help: { type: 'noul', instructions: 'Does the customer still need help?' },
+            mismatch_occurred: {
+              type: 'noul',
+              instructions: 'Did the pilot read back an incorrect level at any point?',
+            },
+            mismatch_resolved: {
+              type: 'noul',
+              instructions:
+                'By the end of the exchange, has the pilot correctly read back the cleared level?',
+            },
           },
         },
-        notice: ['The model reads the whole sequence. The last message changes the answer.'],
+        notice: [
+          'The model reads the whole sequence: a mismatch happened, and was then corrected.',
+          'Asking both questions separately is what lets code log the event without raising an alarm.',
+        ],
       },
     ],
   },
   {
     id: 'structured-instructions',
     title: 'Structured instructions',
-    subtitle: 'Pass data along with the question',
+    subtitle: 'Pass reference data along with the question',
     primitive: 'Concept',
     icon: '🧩',
     steps: [
@@ -374,62 +392,61 @@ export const lessons: Lesson[] = [
         title: 'Instructions can be objects',
         body: [
           'Sometimes the question needs its own reference data. [[instructions]] can be an object: put the question in one field and the data in the others, then refer to the data by name in backticks.',
-          'This keeps the state about the **thing being judged**, while each question carries its own reference data.',
+          'This keeps the state about the **thing being judged** (here, a newly filed flight plan), while the question carries what to compare it with.',
+          '**Note:** some compatible servers accept only plain-string instructions. If you get HTTP 422 on this lesson, that is why.',
         ],
         request: {
           state: {
-            resume:
-              'JOHN A. SMITH — Oakland, CA. Senior Software Engineer at Google (2019–2024). Previously at Square. BS Computer Science, UC Berkeley.',
+            filed_plan:
+              'FPL-ANZ8231-IS -AT76/M-SDFGRY/S -NZWN0615 -N0270F170 DCT -NZNS0045 -PBN/A1B2C2D2 DOF/261001 REG/ZKMCA',
           },
           questions: {
-            same_person: {
+            duplicate_plan: {
               type: 'noul',
               instructions: {
-                potential_duplicate: {
-                  name: 'John Smith',
-                  location: 'Oakland, California',
-                  last_employer: 'Google',
+                existing_plan: {
+                  callsign: 'ANZ8231',
+                  departure: 'NZWN',
+                  destination: 'NZNS',
+                  eobt: '0615',
+                  date: '2026-10-01',
                 },
-                question: 'Is the resume for the same person as `potential_duplicate`?',
+                question: 'Is `filed_plan` a duplicate of `existing_plan`?',
               },
             },
           },
         },
         notice: [
-          'The question names `potential_duplicate`, and the model finds it in the instructions object.',
+          'The question names `existing_plan`, and the model finds it in the instructions object.',
+          'Duplicate flight plans are a classic flight data processing headache. A probability lets code reject obvious duplicates and queue borderline ones for a human.',
         ],
-        tryThis: ['Change `last_employer` to "Meta" and rerun.'],
+        tryThis: ['Change the existing plan’s `eobt` to 0915 and rerun.'],
       },
       {
         title: 'Criteria can be structured too',
         body: [
-          'Option descriptions and level descriptions can also be objects. This is useful when each option carries attributes, such as a product catalogue or a set of tools.',
+          'Option descriptions can also be objects. This is useful when each option carries attributes, such as runways with their headings and approach aids.',
         ],
         request: {
-          state: 'I need something to keep my coffee hot on a 6-hour hike.',
+          state: {
+            metar: 'METAR NZWN 012200Z 35038G52KT 9999 FEW025 SCT040 14/07 Q1006',
+            note: 'Fictional observation, for training only.',
+          },
           questions: {
-            product: {
+            runway_in_use: {
               type: 'choice',
-              instructions: 'Which product best fits the request?',
+              instructions: 'Which runway direction best suits the wind in `metar`?',
               criteria: {
-                mug_ceramic: { name: 'Ceramic mug', insulated: false, portable: false },
-                tumbler_steel: {
-                  name: 'Steel tumbler',
-                  insulated: true,
-                  keeps_hot_hours: 3,
-                  portable: true,
-                },
-                flask_vacuum: {
-                  name: 'Vacuum flask',
-                  insulated: true,
-                  keeps_hot_hours: 12,
-                  portable: true,
-                },
+                '16': { runway: '16', approx_heading_deg_true: 160, note: 'Southerly operations' },
+                '34': { runway: '34', approx_heading_deg_true: 340, note: 'Northerly operations' },
               },
             },
           },
         },
-        notice: ['The model weighs each option’s attributes against the request.'],
+        notice: [
+          'The model weighs each option’s attributes against the wind: 350° at 38 kt gusting 52 favours landing into it on runway 34.',
+          'You still decide the runway in code and procedure. The model’s answer is a cross-check, not an instruction.',
+        ],
       },
     ],
   },
@@ -448,53 +465,60 @@ export const lessons: Lesson[] = [
         ],
         request: {
           state:
-            "Hi, I've been trying to connect my Stripe account for 3 days and the integration keeps failing. I'm losing sales. Please help ASAP.",
+            'Christchurch Control, ANZ529, we have a passenger with a suspected heart attack, request diversion to Wellington and priority, we are at flight level three five zero.',
           questions: {
-            department: {
+            message_type: {
               type: 'choice',
-              instructions: 'Which team should handle this?',
+              instructions: 'What kind of transmission is this?',
               criteria: {
-                billing: 'Payment or subscription issues',
-                technical: 'Bugs or integration problems',
-                sales: 'Pricing or account questions',
+                routine_request: 'A normal request such as a level or route change',
+                urgency: 'A PAN-type situation: urgent but no immediate danger to the aircraft',
+                distress: 'A MAYDAY-type situation: grave and imminent danger to the aircraft',
+                information: 'A report with no request',
               },
             },
-            frustration: {
+            workload_impact: {
               type: 'score',
-              instructions: 'How frustrated does the customer appear?',
+              instructions:
+                'How much controller workload will this create in the next ten minutes?',
               criteria: [
-                'Calm, just stating facts',
-                'Frustrated but civil',
-                'Very angry, strong language',
+                'Negligible',
+                'Some coordination',
+                'Significant coordination',
+                'Dominates the sector',
               ],
             },
-            is_urgent: {
+            requests_diversion: {
               type: 'noul',
-              instructions: 'Does the message convey urgency or time-sensitivity?',
+              instructions: 'Is the crew requesting a diversion?',
             },
-            mentions_competitor: {
+            requests_priority: {
               type: 'noul',
-              instructions: 'Does the customer mention moving to a competitor?',
+              instructions: 'Is the crew requesting priority handling?',
             },
-            churn_risk: { type: 'noul', instructions: 'Is the customer at risk of cancelling?' },
+            medical_services: {
+              type: 'noul',
+              instructions: 'Will medical services likely be needed on arrival?',
+            },
           },
         },
         notice: [
           'Five answers from a single call. Check `usage.input_tokens`: the state is counted once, not five times.',
-          'Your code can ignore `mentions_competitor` until it matters. Speculative questions are cheap.',
+          'Your code can ignore `medical_services` until it matters. Speculative questions are cheap.',
+          'Note how a medical emergency is usually an urgency (PAN) situation, not distress. Watch whether the model agrees and how confident it is.',
         ],
       },
       {
         title: 'Question ids are just labels',
         body: [
-          'The [[question-id]] (the key) is **not** sent to the model. Naming a question `obviously_spam` does not push the answer toward spam. Only the instructions and criteria matter.',
+          'The [[question-id]] (the key) is **not** sent to the model. Naming a question `definitely_routine` does not push the answer toward routine. Only the instructions and criteria matter.',
         ],
         request: {
           state:
-            'Congratulations! You have been selected to receive a free cruise. Reply with your card number to claim.',
+            'MAYDAY MAYDAY MAYDAY, ZK-PLR, engine failure, forced landing, 5 miles south of Taupō, two on board.',
           questions: {
-            q1: { type: 'noul', instructions: 'Is this message a scam?' },
-            definitely_not_a_scam: { type: 'noul', instructions: 'Is this message a scam?' },
+            q1: { type: 'noul', instructions: 'Is this a distress call?' },
+            definitely_routine: { type: 'noul', instructions: 'Is this a distress call?' },
           },
         },
         notice: ['Both answers should match. The model never saw the misleading key name.'],
@@ -511,18 +535,19 @@ export const lessons: Lesson[] = [
       {
         title: 'A clear request',
         body: [
-          'A banking assistant maps each message to an action. Your code acts on its own **only** when confidence clears a threshold, and that threshold is higher for riskier actions.',
+          'An engineering ops assistant maps each message to an action. Your code acts on its own **only** when confidence clears a threshold, and that threshold is higher for riskier actions. Restarting a live ATC service is about as risky as it gets.',
         ],
         request: {
-          state: 'What is my current checking account balance?',
+          state:
+            'What is the current status of the ADS-B ground station feed into the surveillance data processor?',
           questions: {
             action: {
               type: 'choice',
-              instructions: 'Which action does the user want?',
+              instructions: 'Which action does the engineer want?',
               criteria: {
-                check_balance: 'Read-only: show an account balance',
-                approve_transfer: 'Move money between accounts or to another person',
-                dispute_charge: 'Contest a transaction',
+                show_status: 'Read-only: show the health or status of a system',
+                restart_service: 'Restart or fail over a live operational service',
+                raise_change_request: 'Start a change request for planned work',
                 other: 'None of the above',
               },
             },
@@ -530,29 +555,35 @@ export const lessons: Lesson[] = [
         },
         notice: [
           'High confidence on a read-only action means you can act without asking.',
-          'For example: `if (confidence < 0.5) escalate(); else if (choice === "check_balance") run(); else if (confidence > 0.9) run(); else confirm();`',
+          'For example: `if (confidence < 0.5) askForClarification(); else if (choice === "show_status") run(); else if (choice === "restart_service") requireSupervisorApproval(); else confirm();`',
+          'Note that `restart_service` should never run automatically, however confident the model is. Confidence gates *how* you proceed, not *whether* safety procedures apply.',
         ],
       },
       {
         title: 'A vague request',
-        body: ['Now the message is vague, and it could involve moving money.'],
+        body: ['Now the message is vague, and it could involve restarting something live.'],
         request: {
-          state: 'Can you sort out the thing with my account from last week? Send it over.',
+          state: 'Can you sort out that thing with the radar feed from last night? Just bounce it.',
           questions: {
             action: {
               type: 'choice',
-              instructions: 'Which action does the user want?',
+              instructions: 'Which action does the engineer want?',
               criteria: {
-                check_balance: 'Read-only: show an account balance',
-                approve_transfer: 'Move money between accounts or to another person',
-                dispute_charge: 'Contest a transaction',
+                show_status: 'Read-only: show the health or status of a system',
+                restart_service: 'Restart or fail over a live operational service',
+                raise_change_request: 'Start a change request for planned work',
                 other: 'None of the above',
               },
+            },
+            target_identified: {
+              type: 'noul',
+              instructions:
+                'Does the message identify one specific system or service unambiguously?',
             },
           },
         },
         notice: [
-          'Watch the confidence band. If it is below your threshold, the safe move is to ask a clarifying question, even when the top choice is a transfer.',
+          'Watch the confidence band and `target_identified`. Even when the top choice is a restart, a vague target means the safe move is to ask which system is meant.',
           'Try the **Confidence explorer** on the Concepts page to see how a distribution maps to a confidence.',
         ],
       },
