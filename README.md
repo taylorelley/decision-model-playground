@@ -45,12 +45,29 @@ npm run dev               # http://localhost:5173
 | `TYPESAFE_BASE_URL` | `https://api.typesafe.ai` | Any server implementing `POST /v1/systemone`              |
 | `DEFAULT_MODEL`     | `jev-latest`              | Model preselected in the playground (free text in the UI) |
 
+### Docker
+
+```bash
+docker build -t decision-model-playground .
+docker run --rm -p 4173:4173 -e TYPESAFE_API_KEY=your-key decision-model-playground
+# open http://localhost:4173
+```
+
+The container serves the production build with `vite preview`, using the same `/api` proxy.
+`TYPESAFE_BASE_URL` and `DEFAULT_MODEL` can also be passed with `-e`. Settings are read when the
+container starts, so you can reuse one image with different keys and endpoints. `.env` is excluded
+from the build context, so a key never ends up in the image.
+
+To use the mock server from a container, run it on the host and point the container at it. For
+example, on Linux:
+`docker run --rm --network host -e TYPESAFE_API_KEY=mock -e TYPESAFE_BASE_URL=http://localhost:8787 decision-model-playground`.
+
 ### Why requests go through `/api`
 
 The TypeSafe API doesn't accept browser (CORS) requests from `localhost`. Instead, the browser calls
 `/api/*` on the Vite dev/preview server, which forwards the request to `TYPESAFE_BASE_URL` and adds
 `Authorization: Bearer $TYPESAFE_API_KEY`. That proxy is the only server-side piece, and it is
-configured in `vite.config.ts`. The key stays in the Vite process and is never bundled into
+configured in `vite.config.ts`. That file also serves the non-secret settings (whether a key is set, the endpoint, the default model) at `/__playground/config`. The key stays in the Vite process and is never bundled into
 browser code. `npm run build && npm run preview` uses the same proxy.
 
 ### Using a compatible model

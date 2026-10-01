@@ -1,5 +1,5 @@
 /// <reference types="vitest/config" />
-import { defineConfig, loadEnv, type ProxyOptions } from 'vite';
+import { defineConfig, loadEnv, type Connect, type Plugin, type ProxyOptions } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -31,8 +31,24 @@ export default defineConfig(({ mode }) => {
     },
   };
 
+  // Non-secret settings, served at runtime so a prebuilt bundle (e.g. the Docker
+  // image) reflects the environment it runs in rather than the one it was built in.
+  const runtimeConfig = JSON.stringify({ hasKey: apiKey.length > 0, baseUrl, defaultModel });
+  const serveConfig: Connect.NextHandleFunction = (req, res, next) => {
+    if (req.url !== '/__playground/config') return next();
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-store');
+    res.end(runtimeConfig);
+  };
+  const runtimeConfigPlugin: Plugin = {
+    name: 'playground-runtime-config',
+    configureServer: (server) => void server.middlewares.use(serveConfig),
+    configurePreviewServer: (server) => void server.middlewares.use(serveConfig),
+  };
+
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), runtimeConfigPlugin],
+    // Build-time fallbacks, used by tests and if the runtime config can't be fetched.
     define: {
       __HAS_KEY__: JSON.stringify(apiKey.length > 0),
       __BASE_URL__: JSON.stringify(baseUrl),

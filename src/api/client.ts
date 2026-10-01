@@ -3,11 +3,32 @@ import type { EvaluateRequest, EvaluateResponse, ModelInfo } from './types';
 /** Requests go to the Vite proxy, which forwards to TYPESAFE_BASE_URL with the key attached. */
 const API_ROOT = '/api/v1';
 
-export const config = {
+export interface RuntimeConfig {
+  hasKey: boolean;
+  baseUrl: string;
+  defaultModel: string;
+}
+
+/** Non-secret settings. Starts from build-time values; `loadRuntimeConfig` refreshes them. */
+export const config: RuntimeConfig = {
   hasKey: __HAS_KEY__,
   baseUrl: __BASE_URL__,
   defaultModel: __DEFAULT_MODEL__,
 };
+
+/** Fetch the settings of the server we are running on (see vite.config.ts). */
+export async function loadRuntimeConfig(): Promise<void> {
+  try {
+    const res = await fetch('/__playground/config', { cache: 'no-store' });
+    if (!res.ok) return;
+    const c = (await res.json()) as Partial<RuntimeConfig>;
+    if (typeof c.hasKey === 'boolean') config.hasKey = c.hasKey;
+    if (typeof c.baseUrl === 'string') config.baseUrl = c.baseUrl;
+    if (typeof c.defaultModel === 'string') config.defaultModel = c.defaultModel;
+  } catch {
+    /* keep build-time values */
+  }
+}
 
 export class ApiError extends Error {
   status: number;
